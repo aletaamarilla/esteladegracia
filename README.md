@@ -1,46 +1,87 @@
-# Astro Starter Kit: Basics
+# Estela de Gracia
 
-```sh
-npm create astro@latest -- --template basics
-```
+Sitio web de psicologia creado con Astro, con componentes interactivos en React y contenido estructurado para blog y recursos.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Vista general
 
-## 🚀 Project Structure
+- Landing principal con secciones informativas y CTA.
+- Paginas de servicios, FAQ, contacto, testimonios y sobre mi.
+- Blog y recursos en formato Markdown (`src/content`).
+- Assets multimedia en `public`, incluyendo imagenes y videos.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Stack tecnologico
+
+- `Astro` para renderizado de paginas.
+- `React` para islas interactivas.
+- `TypeScript` para tipado.
+- `Tailwind CSS` para estilos.
+- `Sanity` para integracion de contenido CMS.
+
+## Estructura del proyecto
 
 ```text
 /
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── public/                 # Imagenes, iconos, videos y archivos estaticos
+├── sanity/                 # Configuracion/integracion con Sanity
+├── src/
+│   ├── components/         # Componentes UI e islas React
+│   ├── content/            # Blog y recursos en Markdown
+│   ├── data/               # Datos estaticos (servicios, FAQ, etc.)
+│   ├── layouts/            # Layouts base de paginas
+│   ├── pages/              # Rutas del sitio
+│   ├── sections/           # Secciones reutilizables de pagina
+│   └── styles/             # Estilos globales
+├── astro.config.mjs
+├── package.json
+└── tsconfig.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Requisitos
 
-## 🧞 Commands
+- `Node.js` 18+ recomendado
+- `npm` 9+ recomendado
 
-All commands are run from the root of the project, from a terminal:
+## Instalacion y desarrollo
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+npm install
+npm run dev
+```
 
-## 👀 Want to learn more?
+La app quedara disponible en `http://localhost:4321`.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Scripts utiles
+
+| Comando | Descripcion |
+| :-- | :-- |
+| `npm run dev` | Inicia el servidor de desarrollo |
+| `npm run build` | Genera el build de produccion en `dist/` |
+| `npm run preview` | Previsualiza el build de produccion |
+| `npm run astro -- --help` | Muestra ayuda del CLI de Astro |
+
+## Variables de entorno
+
+1. Copia el archivo de ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+2. Completa las variables necesarias segun tu entorno.
+
+> No subas `.env` al repositorio.
+
+## Despliegue
+
+Flujo recomendado:
+
+```bash
+npm run build
+npm run preview
+```
+
+Cuando valides el resultado, despliega el contenido generado en `dist/` en tu plataforma objetivo.
+
+## Autor
+
+Proyecto de sitio web para **Estela de Gracia**.
