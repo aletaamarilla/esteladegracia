@@ -1,0 +1,53 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  date: Date;
+  category: string;
+  readingTime?: number;
+}
+
+const { title, description, href, date, category, readingTime } = Astro.props;
+
+const categoryColors: Record<string, string> = {
+  ansiedad: 'bg-[#98465d]/10 text-[#98465d]',
+  autoestima: 'bg-[#9591eb]/10 text-[#9591eb]',
+  relaciones: 'bg-[#cfcdff] text-[#5d5a5a]',
+  herramientas: 'bg-green-100 text-green-700',
+  psicoeducacion: 'bg-amber-100 text-amber-700',
+};
+
+const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
+---
+
+<a href={href} class="group block">
+  <article class="bg-white rounded-3xl p-6 md:p-8 shadow-sm hover-lift h-full flex flex-col">
+    <div class="flex items-center gap-3 mb-4">
+      <span class={`text-xs font-medium px-3 py-1 rounded-full ${colorClass}`}>
+        {category}
+      </span>
+      {readingTime && (
+        <span class="text-xs text-[#5d5a5a]/50">{readingTime} min lectura</span>
+      )}
+    </div>
+
+    <h3 class="font-display text-xl text-[#5d5a5a] mb-3 group-hover:text-[#98465d] transition-colors">
+      {title}
+    </h3>
+
+    <p class="text-[#5d5a5a]/70 text-sm leading-relaxed mb-4 flex-1">
+      {description}
+    </p>
+
+    <div class="flex items-center justify-between pt-4 border-t border-[#f6f3f5]">
+      <time class="text-xs text-[#5d5a5a]/50" datetime={date.toISOString()}>
+        {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+      </time>
+      <span class="text-sm text-[#98465d] font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+        Leer
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </article>
+</a>

@@ -1,0 +1,72 @@
+---
+interface Breadcrumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  label: string;
+  title: string;
+  highlight?: string;
+  highlightColor?: 'rose' | 'purple';
+  description?: string;
+  breadcrumbs?: Breadcrumb[];
+}
+
+const {
+  label,
+  title,
+  highlight,
+  highlightColor = 'rose',
+  description,
+  breadcrumbs,
+} = Astro.props;
+
+const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#9591eb]';
+---
+
+<section class="py-16 lg:py-24 bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5] relative overflow-hidden">
+  <!-- Decorative elements -->
+  <div class="absolute -top-20 -right-20 w-80 h-80 bg-[#cfcdff]/20 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 -left-20 w-72 h-72 bg-[#98465d]/5 rounded-full blur-3xl"></div>
+
+  <div class="container mx-auto px-4 relative">
+    {breadcrumbs && breadcrumbs.length > 0 && (
+      <nav class="mb-8" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
+          {breadcrumbs.map((crumb, i) => (
+            <>
+              {i > 0 && <span class="text-[#cfcdff]">/</span>}
+              {crumb.href ? (
+                <li>
+                  <a href={crumb.href} class="hover:text-[#98465d] transition-colors">
+                    {crumb.label}
+                  </a>
+                </li>
+              ) : (
+                <li class="text-[#5d5a5a] font-medium">{crumb.label}</li>
+              )}
+            </>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="text-center max-w-3xl mx-auto">
+      <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">
+        {label}
+      </span>
+      <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+        {title}{' '}
+        {highlight && <span class={highlightClass}>{highlight}</span>}
+      </h1>
+      {description && (
+        <p class="text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
+          {description}
+        </p>
+      )}
+    </div>
+
+    <slot />
+  </div>
+</section>

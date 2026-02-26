@@ -1,0 +1,161 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/sections/PageHero.astro';
+import CTABanner from '@/sections/CTABanner.astro';
+import EmailGate from '@/components/islands/EmailGate';
+
+const recursos = (await getCollection('recursos')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const resourceData = recursos.map((r) => ({
+  title: r.data.title,
+  description: r.data.description,
+  type: r.data.type,
+  slug: r.slug,
+}));
+
+const typeIcons: Record<string, { emoji: string; color: string }> = {
+  pdf: { emoji: '📄', color: 'from-[#98465d]/10 to-[#98465d]/5' },
+  audio: { emoji: '🎧', color: 'from-[#9591eb]/10 to-[#9591eb]/5' },
+  video: { emoji: '🎬', color: 'from-[#cfcdff]/30 to-[#cfcdff]/10' },
+  checklist: { emoji: '✅', color: 'from-green-100 to-green-50' },
+};
+---
+
+<PageLayout title="Recursos Gratuitos" description="Herramientas, guias y meditaciones gratuitas para tu bienestar emocional.">
+  <PageHero
+    label="Recursos Gratuitos"
+    title="Tu caja de herramientas para el"
+    highlight="bienestar"
+    highlightColor="purple"
+    description="El mismo material que uso con mis pacientes. Guias practicas, meditaciones y ejercicios que puedes empezar hoy."
+    breadcrumbs={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Recursos Gratuitos' },
+    ]}
+  />
+
+  <!-- Value proposition -->
+  <section class="py-12 bg-white border-b border-[#f6f3f5]">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap justify-center gap-8 md:gap-14 text-center">
+        {[
+          { icon: '🧠', text: 'Basados en evidencia cientifica' },
+          { icon: '💜', text: 'Usados con 500+ pacientes' },
+          { icon: '🔓', text: 'Acceso inmediato y gratuito' },
+          { icon: '📱', text: 'Desde cualquier dispositivo' },
+        ].map((item) => (
+          <div class="flex items-center gap-2.5 group cursor-default">
+            <span class="text-xl group-hover:scale-125 transition-transform duration-300">{item.icon}</span>
+            <span class="text-sm text-[#5d5a5a]/70 font-medium group-hover:text-[#5d5a5a] transition-colors">{item.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Preview de lo que incluye -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-14">
+        <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Que incluye</span>
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+          Todo lo que necesitas para{' '}
+          <span class="text-[#98465d]">empezar</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+        {recursos.map((recurso) => {
+          const typeInfo = typeIcons[recurso.data.type] || typeIcons.pdf;
+          return (
+            <div class="group relative bg-gradient-to-br from-[#f6f3f5] to-white rounded-3xl p-8 shadow-sm hover-glow cursor-default overflow-hidden">
+              <div class="absolute top-0 right-0 w-24 h-24 bg-[#cfcdff]/15 rounded-bl-full"></div>
+              <div class="relative">
+                <div class="flex items-start gap-4 mb-4">
+                  <span class="text-3xl group-hover:scale-125 transition-transform duration-300">{typeInfo.emoji}</span>
+                  <div>
+                    <span class="text-xs font-bold text-[#9591eb] uppercase tracking-wider">
+                      {recurso.data.type}
+                    </span>
+                    <h3 class="font-display text-xl text-[#5d5a5a] mt-1">
+                      {recurso.data.title}
+                    </h3>
+                  </div>
+                </div>
+                <p class="text-sm text-[#5d5a5a]/70 leading-relaxed mb-4">
+                  {recurso.data.description}
+                </p>
+                <div class="flex items-center gap-2 text-xs text-[#98465d] font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Acceso inmediato al desbloquear
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Email Gate Section -->
+  <section class="py-16 lg:py-24 bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/15 to-[#f6f3f5] relative overflow-hidden">
+    <div class="absolute top-10 left-10 w-60 h-60 bg-[#98465d]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-72 h-72 bg-[#9591eb]/10 rounded-full blur-3xl"></div>
+
+    <div class="container mx-auto px-4 relative">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+          Accede a todos los{' '}
+          <span class="text-[#9591eb]">recursos</span>
+        </h2>
+        <p class="text-[#5d5a5a]/70 mt-4 max-w-lg mx-auto">
+          Deja tu email y desbloquea el acceso inmediato. Sin spam — solo contenido de valor.
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <EmailGate client:load resources={resourceData} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-2xl mx-auto text-center">
+        <div class="w-12 h-12 bg-[#cfcdff]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#9591eb" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+        </div>
+        <blockquote class="font-serif text-xl text-[#5d5a5a] leading-relaxed italic mb-6">
+          "Las guias de Estela me ayudaron a manejar mi ansiedad entre sesiones. Son practicas, claras y se nota que estan hechas con cariño."
+        </blockquote>
+        <p class="text-sm text-[#5d5a5a]/50 font-medium">— Paciente anonima</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Also check out blog -->
+  <section class="py-12 bg-[#f6f3f5]">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-[#5d5a5a]/70 mb-4">Tambien te puede interesar</p>
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all text-lg"
+      >
+        Leer el blog
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <CTABanner
+    title="Los recursos son el primer paso."
+    highlight="La terapia es el siguiente."
+    description="Cuando estes lista para profundizar, aqui estoy."
+    primaryCta={{ label: 'Reservar sesion', href: '/contacto' }}
+    secondaryCta={{ label: 'Ver servicios', href: '/servicios' }}
+  />
+</PageLayout>

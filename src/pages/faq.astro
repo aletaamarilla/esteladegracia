@@ -1,0 +1,51 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../sections/PageHero.astro';
+import CTABanner from '../sections/CTABanner.astro';
+import FAQSection from '../components/islands/FAQSection';
+import { faqData } from '../data/faq';
+---
+
+<PageLayout
+  title="Preguntas Frecuentes"
+  description="Resuelve tus dudas sobre terapia individual, grupal y tratamiento de ansiedad."
+>
+  <PageHero
+    label="FAQ"
+    title="Preguntas que podrias"
+    highlight="tener"
+    highlightColor="purple"
+    description="No encuentras lo que buscas? No dudes en contactarme—siempre estoy feliz de conversar."
+    breadcrumbs={[
+      { label: "Inicio", href: "/" },
+      { label: "Preguntas Frecuentes" },
+    ]}
+  />
+
+  <FAQSection client:visible />
+
+  <CTABanner
+    title="No encuentras tu pregunta?"
+    highlight="Contactame."
+    description="Estoy disponible para resolver cualquier duda que tengas. Escribeme sin compromiso."
+    primaryCta={{ label: "Contactar", href: "/contacto" }}
+  />
+
+  <!-- FAQ Structured Data for SEO -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      ...faqData.individual,
+      ...faqData.group,
+      ...faqData.anxiety,
+    ].map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer,
+      },
+    })),
+  })} />
+</PageLayout>

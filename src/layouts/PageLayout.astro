@@ -1,0 +1,33 @@
+---
+import Layout from './Layout.astro';
+import Navigation from '@/components/islands/Navigation';
+import FooterSection from '@/sections/FooterSection.astro';
+import GlobalFloatingHearts from '@/sections/GlobalFloatingHearts.astro';
+import StickyMobileCTA from '@/components/islands/StickyMobileCTA';
+
+interface Props {
+  title: string;
+  description?: string;
+  showFloatingHearts?: boolean;
+  showStickyMobileCTA?: boolean;
+}
+
+const {
+  title,
+  description = 'Psicologia autentica, cercana y real. Terapia individual y grupal para ansiedad, trauma y autoestima.',
+  showFloatingHearts = true,
+  showStickyMobileCTA = true,
+} = Astro.props;
+---
+
+<Layout title={`${title} | Estela de Gracia`} description={description}>
+  <main class="min-h-screen relative">
+    {showFloatingHearts && <GlobalFloatingHearts />}
+    <Navigation client:load />
+    <div class="pt-20">
+      <slot />
+    </div>
+    <FooterSection />
+    {showStickyMobileCTA && <StickyMobileCTA client:idle />}
+  </main>
+</Layout>

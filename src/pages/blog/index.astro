@@ -1,0 +1,153 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/sections/PageHero.astro';
+import CTABanner from '@/sections/CTABanner.astro';
+import BlogCard from '@/components/shared/BlogCard.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf()
+);
+
+const featuredPost = posts.find((p) => p.data.featured);
+const regularPosts = posts.filter((p) => p !== featuredPost);
+
+const categories = [
+  { key: 'todos', label: 'Todos' },
+  { key: 'ansiedad', label: 'Ansiedad' },
+  { key: 'autoestima', label: 'Autoestima' },
+  { key: 'relaciones', label: 'Relaciones' },
+  { key: 'herramientas', label: 'Herramientas' },
+  { key: 'psicoeducacion', label: 'Psicoeducación' },
+];
+---
+
+<PageLayout title="Blog" description="Articulos sobre ansiedad, autoestima, relaciones y herramientas de bienestar emocional.">
+  <PageHero
+    label="Blog"
+    title="Articulos para tu"
+    highlight="bienestar emocional"
+    highlightColor="rose"
+    description="Reflexiones, herramientas y psicoeducacion para acompanarte en tu proceso."
+    breadcrumbs={[
+      { label: 'Inicio', href: '/' },
+      { label: 'Blog' },
+    ]}
+  />
+
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <!-- Category filters -->
+      <div class="flex flex-wrap gap-2 mb-12 justify-center">
+        {categories.map((cat) => (
+          <button
+            data-category={cat.key}
+            class:list={[
+              'blog-filter px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+              cat.key === 'todos'
+                ? 'bg-[#98465d] text-white'
+                : 'bg-[#f6f3f5] text-[#5d5a5a] hover:bg-[#98465d]/10 hover:text-[#98465d]',
+            ]}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      <!-- Featured post -->
+      {featuredPost && (
+        <div class="mb-12 blog-card" data-category={featuredPost.data.category}>
+          <a href={`/blog/${featuredPost.slug}`} class="group block">
+            <article class="bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/10 to-white rounded-3xl p-8 md:p-12 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+              <span class="absolute top-6 right-6 bg-[#98465d] text-white text-xs font-medium px-3 py-1 rounded-full">
+                Destacado
+              </span>
+              <div class="max-w-2xl">
+                <span class="inline-block text-xs font-medium px-3 py-1 rounded-full bg-[#98465d]/10 text-[#98465d] mb-4">
+                  {featuredPost.data.category}
+                </span>
+                <h2 class="font-display text-2xl md:text-3xl text-[#5d5a5a] mb-4 group-hover:text-[#98465d] transition-colors">
+                  {featuredPost.data.title}
+                </h2>
+                <p class="text-[#5d5a5a]/70 leading-relaxed mb-6">
+                  {featuredPost.data.description}
+                </p>
+                <div class="flex items-center gap-4 text-sm text-[#5d5a5a]/50">
+                  <time datetime={featuredPost.data.publishedDate.toISOString()}>
+                    {featuredPost.data.publishedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </time>
+                  {featuredPost.data.readingTime && (
+                    <span>{featuredPost.data.readingTime} min lectura</span>
+                  )}
+                </div>
+              </div>
+            </article>
+          </a>
+        </div>
+      )}
+
+      <!-- Posts grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-grid">
+        {regularPosts.map((post) => (
+          <div class="blog-card" data-category={post.data.category}>
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              href={`/blog/${post.slug}`}
+              date={post.data.publishedDate}
+              category={post.data.category}
+              readingTime={post.data.readingTime}
+            />
+          </div>
+        ))}
+      </div>
+
+      <!-- Empty state -->
+      <div id="blog-empty" class="hidden text-center py-16">
+        <p class="text-[#5d5a5a]/50 text-lg">No hay articulos en esta categoria todavia.</p>
+      </div>
+    </div>
+  </section>
+
+  <CTABanner
+    title="¿Necesitas apoyo profesional?"
+    description="Los articulos informan, pero la terapia transforma."
+    primaryCta={{ label: 'Reservar sesion', href: '/contacto' }}
+    secondaryCta={{ label: 'Conoce mis servicios', href: '/servicios' }}
+  />
+</PageLayout>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('.blog-filter');
+  const cards = document.querySelectorAll<HTMLElement>('.blog-card');
+  const emptyState = document.getElementById('blog-empty');
+
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const category = btn.dataset.category;
+
+      // Update active filter
+      filters.forEach((f) => {
+        f.classList.remove('bg-[#98465d]', 'text-white');
+        f.classList.add('bg-[#f6f3f5]', 'text-[#5d5a5a]');
+      });
+      btn.classList.remove('bg-[#f6f3f5]', 'text-[#5d5a5a]');
+      btn.classList.add('bg-[#98465d]', 'text-white');
+
+      // Filter cards
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        if (category === 'todos' || card.dataset.category === category) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', visibleCount > 0);
+      }
+    });
+  });
+</script>

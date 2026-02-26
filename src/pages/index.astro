@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroSection from '../sections/HeroSection.astro';
+import ServicesSection from '../sections/ServicesSection.astro';
+import FooterSection from '../sections/FooterSection.astro';
+import CTABanner from '../sections/CTABanner.astro';
+
+import Navigation from '../components/islands/Navigation';
+import AboutAnimated from '../components/islands/AboutAnimated';
+import ProblemsAnimated from '../components/islands/ProblemsAnimated';
+import TestimonialsSection from '../components/islands/TestimonialsSection';
+import LeadMagnetSection from '../components/islands/LeadMagnetSection';
+import FAQSection from '../components/islands/FAQSection';
+---
+
+<Layout>
+  <main class="min-h-screen relative">
+    <Navigation client:load />
+    <HeroSection />
+
+    <!-- About Summary + CTA -->
+    <div class="relative">
+      <AboutAnimated client:visible />
+      <div class="text-center pb-16 -mt-8">
+        <a
+          href="/sobre-mi"
+          class="inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all"
+        >
+          Conoceme mejor
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <ProblemsAnimated client:visible />
+    <ServicesSection />
+
+    <!-- Testimonials + CTA -->
+    <div class="relative">
+      <TestimonialsSection client:visible />
+      <div class="text-center pb-16 -mt-8">
+        <a
+          href="/testimonios"
+          class="inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all"
+        >
+          Ver todos los testimonios
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <LeadMagnetSection client:visible />
+
+    <!-- FAQ + CTA -->
+    <div class="relative">
+      <FAQSection client:visible />
+      <div class="text-center pb-16 -mt-8">
+        <a
+          href="/faq"
+          class="inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all"
+        >
+          Ver todas las preguntas frecuentes
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <CTABanner
+      title="¿Lista para dar el primer paso?"
+      highlight="No tienes que hacerlo sola."
+      description="Reserva tu sesion de valoracion y empecemos juntas. Sin compromiso."
+      primaryCta={{ label: 'Reservar mi primera sesion', href: '/contacto' }}
+      secondaryCta={{ label: 'Escribeme por WhatsApp', href: 'https://wa.me/34600000000' }}
+    />
+
+    <FooterSection />
+  </main>
+</Layout>

@@ -1,0 +1,141 @@
+---
+---
+
+<section id="services" class="py-20 lg:py-32 bg-white relative overflow-hidden">
+  <!-- Decorative elements -->
+  <div class="absolute top-0 right-0 w-64 h-64 bg-[#cfcdff]/20 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#98465d]/5 rounded-full blur-3xl"></div>
+
+  <div class="container mx-auto px-4 relative">
+    <div class="text-center mb-16">
+      <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Servicios</span>
+      <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+        Encuentra el camino que{" "}
+        <span class="text-[#9591eb]">se adapta a ti</span>
+      </h2>
+      <p class="text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
+        Ya sea que prefieras sesiones individuales o el poder de las experiencias compartidas, hay un espacio para ti aqui.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <!-- Individual Therapy -->
+      <div class="group relative bg-white border-0 shadow-xl rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col">
+        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#98465d] to-[#9591eb]"></div>
+
+        <div class="pt-10 pb-4 px-8">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-16 h-16 bg-[#98465d]/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <!-- User icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span class="inline-flex items-center justify-center rounded-md border border-transparent bg-[#cfcdff] text-[#5d5a5a] px-4 py-1 text-xs font-medium">
+              Mas Popular
+            </span>
+          </div>
+          <h3 class="font-display text-2xl text-[#5d5a5a]">Terapia Individual</h3>
+          <p class="text-[#5d5a5a]/70 mt-2">Atencion personal y enfocada en tu viaje unico</p>
+        </div>
+
+        <div class="px-8 pb-8 flex-1 flex flex-col">
+          <div class="space-y-3 mb-8">
+            {["Ansiedad y Estres", "Recuperacion de Trauma", "Construccion de Autoestima"].map((item) => (
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 bg-[#cfcdff]/50 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <span class="text-[#5d5a5a]">{item}</span>
+              </div>
+            ))}
+          </div>
+
+          <!-- Pricing -->
+          <div class="space-y-3 p-6 bg-[#f6f3f5] rounded-2xl mb-6">
+            <div class="flex justify-between items-center">
+              <span class="text-[#5d5a5a]/70">Sesion de Evaluacion</span>
+              <span class="font-bold text-[#98465d]">&euro;50</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-[#5d5a5a]/70">Sesion Regular</span>
+              <span class="font-bold text-[#98465d]">&euro;70</span>
+            </div>
+            <div class="flex justify-between items-center pt-3 border-t border-[#cfcdff]">
+              <span class="text-[#5d5a5a] font-medium">Pack de 4 Sesiones</span>
+              <div class="text-right">
+                <span class="font-bold text-[#9591eb] text-xl">&euro;220</span>
+                <span class="block text-xs text-[#5d5a5a]/50">Ahorra &euro;60</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="/servicios/terapia-individual" class="hover-shimmer mt-auto w-full inline-flex items-center justify-center bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full py-6 text-lg font-medium transition-all hover:shadow-lg hover:shadow-[#98465d]/25">
+            Ver detalles
+          </a>
+        </div>
+      </div>
+
+      <!-- Group Therapy -->
+      <div class="group relative bg-white border-0 shadow-xl rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col">
+        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#9591eb] to-[#cfcdff]"></div>
+
+        <!-- Friend Discount Badge -->
+        <div class="absolute -right-3 top-20 rotate-12">
+          <div class="bg-[#98465d] text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2">
+            <!-- Gift icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+            <span class="text-sm font-medium">Trae un amigo, ahorra &euro;30!</span>
+          </div>
+        </div>
+
+        <div class="pt-10 pb-4 px-8">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-16 h-16 bg-[#9591eb]/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <!-- Users icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+          </div>
+          <h3 class="font-display text-2xl text-[#5d5a5a]">Terapia Grupal</h3>
+          <p class="text-[#5d5a5a]/70 mt-2">Crecimiento compartido en una comunidad de apoyo</p>
+        </div>
+
+        <div class="px-8 pb-8 flex-1 flex flex-col">
+          <div class="space-y-3 mb-8">
+            {["Viaje de 3 Meses", "Grupos Pequenos (6-8)", "Sesiones Semanales", "Kit de Herramientas Incluido"].map((item, i) => (
+              <div class="flex items-center gap-3">
+                <div class="w-6 h-6 bg-[#cfcdff]/50 rounded-full flex items-center justify-center">
+                  {i === 3 ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  )}
+                </div>
+                <span class="text-[#5d5a5a]">{item}</span>
+              </div>
+            ))}
+          </div>
+
+          <!-- Pricing -->
+          <div class="space-y-3 p-6 bg-gradient-to-br from-[#9591eb]/10 to-[#cfcdff]/20 rounded-2xl mb-6">
+            <div class="flex justify-between items-center">
+              <span class="text-[#5d5a5a]/70">Programa Completo</span>
+              <div class="text-right">
+                <span class="font-bold text-[#9591eb] text-xl">&euro;450</span>
+                <span class="block text-xs text-[#5d5a5a]/50">12 sesiones incluidas</span>
+              </div>
+            </div>
+            <div class="pt-3 border-t border-[#9591eb]/20">
+              <p class="text-sm text-[#5d5a5a]/60 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+                Refiere a un amigo y ambos obtienen &euro;30 de descuento!
+              </p>
+            </div>
+          </div>
+
+          <a href="/servicios/terapia-grupal" class="hover-shimmer mt-auto w-full inline-flex items-center justify-center bg-[#9591eb] hover:bg-[#9591eb]/90 text-white rounded-full py-6 text-lg font-medium transition-all hover:shadow-lg hover:shadow-[#9591eb]/25">
+            Ver detalles
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

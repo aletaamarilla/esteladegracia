@@ -1,0 +1,36 @@
+---
+interface TrustStat {
+  value: string
+  label: string
+}
+
+interface Props {
+  stats?: TrustStat[]
+  bgColor?: 'white' | 'soft'
+}
+
+const {
+  stats = [
+    { value: '12+', label: 'Anos de experiencia' },
+    { value: '500+', label: 'Pacientes atendidos' },
+    { value: '4.9/5', label: 'Valoracion en Google' },
+    { value: '100%', label: 'Online' },
+  ],
+  bgColor = 'white',
+} = Astro.props;
+
+const bgClass = bgColor === 'white' ? 'bg-white' : 'bg-[#f6f3f5]';
+---
+
+<section class={`py-12 ${bgClass}`}>
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap justify-center gap-8 md:gap-16">
+      {stats.map((stat) => (
+        <div class="group text-center cursor-default">
+          <p class="text-2xl md:text-3xl font-bold text-[#98465d] group-hover:scale-110 transition-transform duration-300">{stat.value}</p>
+          <p class="text-sm text-[#5d5a5a]/60 mt-1">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

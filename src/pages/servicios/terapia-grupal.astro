@@ -1,0 +1,243 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PageHero from '../../sections/PageHero.astro';
+import CTABanner from '../../sections/CTABanner.astro';
+import ServiceProcess from '../../components/islands/ServiceProcess';
+import GroupTherapyTimeline from '../../components/islands/GroupTherapyTimeline';
+import NewsletterForm from '../../components/islands/NewsletterForm';
+import { groupTherapy } from '../../data/services';
+import { testimonials } from '../../data/testimonials';
+
+const groupTestimonials = testimonials.filter(t => t.serviceType === 'group').slice(0, 2);
+
+const programDetailLabels: Record<string, string> = {
+  duration: "Duracion",
+  sessionsTotal: "Sesiones totales",
+  frequency: "Frecuencia",
+  groupSize: "Tamano del grupo",
+  sessionLength: "Duracion sesion",
+  modality: "Modalidad",
+};
+---
+
+<PageLayout
+  title="Terapia Grupal Online | Programa 3 Meses"
+  description="Programa grupal de 3 meses para ansiedad. Grupos pequenos de 6-8 personas. Kit de herramientas incluido. EUR450."
+>
+  <PageHero
+    label="Terapia Grupal"
+    title={groupTherapy.tagline}
+    breadcrumbs={[
+      { label: "Inicio", href: "/" },
+      { label: "Servicios", href: "/servicios" },
+      { label: "Terapia Grupal" },
+    ]}
+  >
+    <!-- Friend Discount Badge -->
+    <div class="flex justify-center mt-6">
+      <div class="inline-flex items-center gap-2 bg-[#98465d] text-white px-6 py-3 rounded-full shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+        <span class="font-medium">Trae un amigo y ambos ahorran &euro;30!</span>
+      </div>
+    </div>
+  </PageHero>
+
+  <!-- Para quién -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Para quien es</span>
+        <p class="text-lg text-[#5d5a5a]/80 leading-relaxed font-serif">
+          {groupTherapy.whoIsItFor}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Qué lo diferencia -->
+  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Que incluye</span>
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-6 text-balance">
+          Mucho mas que{' '}
+          <span class="text-[#9591eb]">sesiones en grupo</span>
+        </h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+        {groupTherapy.differentiators.map((item) => (
+          <div class="group flex items-start gap-3 bg-white rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
+            <div class="w-6 h-6 bg-[#9591eb]/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#9591eb]/20 group-hover:scale-110 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <span class="text-[#5d5a5a]">{item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Bonuses/Regalos -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+          Regalos{' '}
+          <span class="text-[#98465d]">incluidos</span>
+        </h2>
+      </div>
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        {groupTherapy.bonuses.map((bonus) => (
+          <div class="group bg-gradient-to-br from-[#f6f3f5] to-white rounded-3xl p-6 text-center shadow-sm hover:shadow-lg hover:-translate-y-2 transition-all duration-300 cursor-default">
+            <div class="w-12 h-12 bg-[#9591eb]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#9591eb]/20 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+            </div>
+            <h3 class="font-semibold text-[#5d5a5a] mb-2">{bonus.title}</h3>
+            <p class="text-sm text-[#5d5a5a]/70">{bonus.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Detalles del programa -->
+  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+          Detalles del{' '}
+          <span class="text-[#9591eb]">programa</span>
+        </h2>
+      </div>
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+        {Object.entries(groupTherapy.programDetails).map(([key, value]) => (
+            <div class="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
+              <p class="text-2xl font-bold text-[#9591eb] mb-1 group-hover:scale-110 transition-transform duration-300">{value}</p>
+              <p class="text-sm text-[#5d5a5a]/70 group-hover:text-[#5d5a5a] transition-colors">{programDetailLabels[key] || key}</p>
+            </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Precios + Incentivo -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-md mx-auto">
+        <div class="bg-gradient-to-br from-[#9591eb]/10 to-[#cfcdff]/20 rounded-3xl p-8 shadow-lg text-center">
+          <h3 class="font-display text-2xl text-[#5d5a5a] mb-2">Programa Completo</h3>
+          <p class="text-4xl font-bold text-[#9591eb] mb-1">&euro;{groupTherapy.pricing.total}</p>
+          <p class="text-sm text-[#5d5a5a]/60 mb-6">12 sesiones incluidas (&euro;{groupTherapy.pricing.perSession}/sesion)</p>
+
+          <div class="bg-white rounded-2xl p-5 mb-6">
+            <div class="flex items-center gap-2 justify-center text-[#98465d]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+              <span class="font-medium">Descuento amigo</span>
+            </div>
+            <p class="text-sm text-[#5d5a5a]/70 mt-2">
+              Refiere a un amigo y ambos obtienen &euro;{groupTherapy.pricing.friendDiscount} de descuento
+              <span class="block text-xs text-[#5d5a5a]/50 mt-1">(&euro;{groupTherapy.pricing.friendDiscountMonthly} menos al mes)</span>
+            </p>
+          </div>
+
+          <a href="/contacto" class="inline-flex items-center justify-center bg-[#9591eb] hover:bg-[#9591eb]/90 text-white rounded-full px-8 py-4 text-lg font-medium transition-all hover:scale-105">
+            Reservar plaza
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline 3 meses -->
+  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">El programa</span>
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+          3 meses de{' '}
+          <span class="text-[#9591eb]">transformacion</span>
+        </h2>
+      </div>
+      <div class="max-w-5xl mx-auto">
+        <GroupTherapyTimeline client:visible months={groupTherapy.monthlyBreakdown} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Proceso 1-2-3 -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+          Como{' '}
+          <span class="text-[#98465d]">unirte</span>
+        </h2>
+      </div>
+      <div class="max-w-4xl mx-auto">
+        <ServiceProcess client:visible steps={groupTherapy.process} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Email capture for syllabus -->
+  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
+    <div class="container mx-auto px-4">
+      <div class="max-w-xl mx-auto text-center">
+        <h2 class="font-display text-2xl md:text-3xl text-[#5d5a5a] mb-4">
+          Quieres el programa detallado{' '}
+          <span class="text-[#9591eb]">clase a clase?</span>
+        </h2>
+        <p class="text-[#5d5a5a]/70 mb-8">
+          Deja tu email y te envio el documento con todo lo que veremos en cada sesion.
+        </p>
+        <NewsletterForm
+          client:visible
+          buttonText="Enviar programa"
+          successMessage="Perfecto! Revisa tu email para el programa detallado."
+          source="group-therapy-syllabus"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios -->
+  {groupTestimonials.length > 0 && (
+    <section class="py-16 lg:py-24 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+            Experiencias del{' '}
+            <span class="text-[#9591eb]">grupo</span>
+          </h2>
+        </div>
+        <div class="max-w-2xl mx-auto">
+          {groupTestimonials.map((t) => (
+            <div class="bg-[#f6f3f5] rounded-3xl p-8 shadow-sm">
+              <div class="flex gap-1 mb-4">
+                {[...Array(t.rating)].map(() => (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#facc15" stroke="#facc15" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                ))}
+              </div>
+              <p class="font-serif italic text-[#5d5a5a] mb-4 leading-relaxed">"{t.text}"</p>
+              <p class="font-semibold text-[#5d5a5a] text-sm">{t.name}</p>
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-8">
+          <a href="/testimonios" class="text-[#9591eb] font-medium hover:underline">
+            Ver todos los testimonios →
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CTABanner
+    title="Quiero unirme al grupo!"
+    highlight=""
+    highlightColor="purple"
+    description="Las plazas son limitadas. Contactame para reservar tu lugar."
+    primaryCta={{ label: "Reservar plaza", href: "/contacto" }}
+    secondaryCta={{ label: "Tengo preguntas", href: "/faq" }}
+  />
+</PageLayout>

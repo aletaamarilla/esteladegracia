@@ -1,0 +1,43 @@
+---
+const HEARTS_CONFIG = [
+  { left: 5, size: 16, duration: 15, delay: 0, opacity: 0.12 },
+  { left: 15, size: 20, duration: 18, delay: 2, opacity: 0.1 },
+  { left: 25, size: 14, duration: 14, delay: 5, opacity: 0.08 },
+  { left: 35, size: 18, duration: 16, delay: 1, opacity: 0.11 },
+  { left: 45, size: 22, duration: 20, delay: 4, opacity: 0.09 },
+  { left: 55, size: 15, duration: 17, delay: 7, opacity: 0.1 },
+  { left: 65, size: 19, duration: 15, delay: 3, opacity: 0.12 },
+  { left: 75, size: 16, duration: 19, delay: 6, opacity: 0.08 },
+  { left: 85, size: 21, duration: 16, delay: 1.5, opacity: 0.11 },
+  { left: 95, size: 14, duration: 18, delay: 8, opacity: 0.09 },
+  { left: 10, size: 17, duration: 17, delay: 9, opacity: 0.1 },
+  { left: 30, size: 20, duration: 14, delay: 10, opacity: 0.12 },
+  { left: 50, size: 15, duration: 19, delay: 11, opacity: 0.08 },
+  { left: 70, size: 18, duration: 16, delay: 12, opacity: 0.11 },
+  { left: 90, size: 16, duration: 15, delay: 13, opacity: 0.09 },
+];
+---
+
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+  {HEARTS_CONFIG.map((heart) => (
+    <div
+      class="absolute animate-float-up"
+      style={`left:${heart.left}%;bottom:-40px;animation-delay:${heart.delay}s;animation-duration:${heart.duration}s;`}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={heart.size}
+        height={heart.size}
+        viewBox="0 0 24 24"
+        fill={`rgba(152, 70, 93, ${heart.opacity})`}
+        stroke="#98465d"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style={`opacity:${heart.opacity};`}
+      >
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      </svg>
+    </div>
+  ))}
+</div>

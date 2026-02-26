@@ -1,0 +1,129 @@
+---
+import PageLayout from './PageLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  publishedDate: Date;
+  updatedDate?: Date;
+  category: string;
+  readingTime?: number;
+  author?: string;
+}
+
+const {
+  title,
+  description,
+  publishedDate,
+  updatedDate,
+  category,
+  readingTime,
+  author = 'Estela de Gracia',
+} = Astro.props;
+
+const categoryColors: Record<string, string> = {
+  ansiedad: 'bg-[#98465d]/10 text-[#98465d]',
+  autoestima: 'bg-[#9591eb]/10 text-[#9591eb]',
+  relaciones: 'bg-[#cfcdff] text-[#5d5a5a]',
+  herramientas: 'bg-green-100 text-green-700',
+  psicoeducacion: 'bg-amber-100 text-amber-700',
+};
+
+const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
+---
+
+<PageLayout title={title} description={description}>
+  <article class="py-16 lg:py-24">
+    <div class="container mx-auto px-4">
+      <!-- Breadcrumbs -->
+      <nav class="mb-8 max-w-3xl mx-auto" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
+          <li><a href="/" class="hover:text-[#98465d] transition-colors">Inicio</a></li>
+          <span class="text-[#cfcdff]">/</span>
+          <li><a href="/blog" class="hover:text-[#98465d] transition-colors">Blog</a></li>
+          <span class="text-[#cfcdff]">/</span>
+          <li class="text-[#5d5a5a] font-medium truncate max-w-[200px]">{title}</li>
+        </ol>
+      </nav>
+
+      <!-- Header -->
+      <header class="max-w-3xl mx-auto mb-12 text-center">
+        <span class={`inline-block text-xs font-medium px-3 py-1 rounded-full ${colorClass} mb-4`}>
+          {category}
+        </span>
+        <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+          {title}
+        </h1>
+        <p class="text-lg text-[#5d5a5a]/70 mb-8">
+          {description}
+        </p>
+        <div class="flex items-center justify-center gap-4 text-sm text-[#5d5a5a]/50">
+          <span>{author}</span>
+          <span class="w-1 h-1 rounded-full bg-[#cfcdff]"></span>
+          <time datetime={publishedDate.toISOString()}>
+            {publishedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </time>
+          {readingTime && (
+            <>
+              <span class="w-1 h-1 rounded-full bg-[#cfcdff]"></span>
+              <span>{readingTime} min lectura</span>
+            </>
+          )}
+        </div>
+        {updatedDate && (
+          <p class="text-xs text-[#5d5a5a]/40 mt-2">
+            Actualizado: {updatedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
+        )}
+      </header>
+
+      <!-- Content -->
+      <div class="max-w-3xl mx-auto prose prose-lg
+        prose-headings:font-display prose-headings:text-[#5d5a5a] prose-headings:font-semibold
+        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
+        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+        prose-p:text-[#5d5a5a]/80 prose-p:leading-relaxed
+        prose-li:text-[#5d5a5a]/80
+        prose-strong:text-[#5d5a5a] prose-strong:font-semibold
+        prose-a:text-[#98465d] prose-a:underline-offset-2 hover:prose-a:text-[#98465d]/80
+        prose-blockquote:border-l-[#9591eb] prose-blockquote:text-[#5d5a5a]/70 prose-blockquote:italic
+        prose-hr:border-[#f6f3f5]
+      ">
+        <slot />
+      </div>
+
+      <!-- Author card -->
+      <div class="max-w-3xl mx-auto mt-16 pt-8 border-t border-[#f6f3f5]">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#98465d]/20 to-[#9591eb]/20 flex items-center justify-center shrink-0">
+            <span class="text-2xl font-display text-[#98465d]">E</span>
+          </div>
+          <div>
+            <h3 class="font-display text-lg text-[#5d5a5a] mb-1">Estela de Gracia</h3>
+            <p class="text-sm text-[#5d5a5a]/60 mb-3">
+              Psicologa sanitaria especializada en ansiedad, trauma y autoestima. 12+ anos de experiencia.
+            </p>
+            <a
+              href="/contacto"
+              class="inline-flex items-center gap-2 text-sm text-[#98465d] font-medium hover:underline"
+            >
+              Reservar sesion
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back to blog -->
+      <div class="max-w-3xl mx-auto mt-12 text-center">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 text-sm text-[#5d5a5a]/60 hover:text-[#98465d] transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          Volver al blog
+        </a>
+      </div>
+    </div>
+  </article>
+</PageLayout>

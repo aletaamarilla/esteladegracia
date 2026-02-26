@@ -1,0 +1,33 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../sections/PageHero.astro';
+import CTABanner from '../sections/CTABanner.astro';
+import TestimonialsLanding from '../components/islands/TestimonialsLanding';
+---
+
+<PageLayout
+  title="Testimonios"
+  description="Lee y escucha las experiencias de personas reales que han transformado su vida con terapia."
+>
+  <PageHero
+    label="Testimonios"
+    title="Historias reales de"
+    highlight="personas reales"
+    highlightColor="rose"
+    description="Cada testimonio viene acompanado de un momento especial: un abrazo que simboliza el progreso y la conexion genuina."
+    breadcrumbs={[
+      { label: "Inicio", href: "/" },
+      { label: "Testimonios" },
+    ]}
+  />
+
+  <TestimonialsLanding client:visible />
+
+  <CTABanner
+    title="Tu historia puede ser"
+    highlight="la siguiente. Empieza hoy."
+    description="Reserva una sesion de valoracion y descubre como la terapia puede transformar tu vida. Sin compromiso."
+    primaryCta={{ label: "Reservar mi primera sesion", href: "/contacto" }}
+    secondaryCta={{ label: "Ver servicios", href: "/servicios" }}
+  />
+</PageLayout>

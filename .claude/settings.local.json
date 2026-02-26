@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(ls:*)",
+      "Bash(sudo apt-get update:*)",
+      "Bash(sudo apt-get:*)",
+      "WebFetch(domain:media.a24.com)",
+      "Bash(npx astro check:*)",
+      "Bash(npx astro build:*)"
+    ]
+  }
+}
