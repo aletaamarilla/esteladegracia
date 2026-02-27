@@ -40,7 +40,7 @@ export default function GroupTherapyTimeline({ months }: { months: MonthData[] }
             }`}
             style={{ transitionDelay: `${index * 0.2}s` }}
           >
-            <div className={`bg-gradient-to-br ${color.bg} rounded-3xl p-8 h-full`}>
+            <div className={`bg-gradient-to-br ${color.bg} rounded-3xl p-5 md:p-8 h-full`}>
               {/* Month number */}
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ring-4 ${color.ring}`}

@@ -11,6 +11,7 @@ import ProblemsAnimated from '../components/islands/ProblemsAnimated';
 import TestimonialsSection from '../components/islands/TestimonialsSection';
 import LeadMagnetSection from '../components/islands/LeadMagnetSection';
 import FAQSection from '../components/islands/FAQSection';
+import StickyMobileCTA from '../components/islands/StickyMobileCTA';
 ---
 
 <Layout>
@@ -18,8 +19,7 @@ import FAQSection from '../components/islands/FAQSection';
     <Navigation client:load />
     <HeroSection />
 
-    <!-- About Summary + CTA -->
-    <div class="relative">
+    <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff1">
       <AboutAnimated client:visible />
       <div class="text-center pb-16 -mt-8">
         <a
@@ -32,11 +32,15 @@ import FAQSection from '../components/islands/FAQSection';
       </div>
     </div>
 
-    <ProblemsAnimated client:visible />
-    <ServicesSection />
+    <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #f0eef6">
+      <ProblemsAnimated client:visible />
+    </div>
 
-    <!-- Testimonials + CTA -->
-    <div class="relative">
+    <div class="section-flow" style="--section-bg: #f0eef6; --next-bg: #f4eced">
+      <ServicesSection />
+    </div>
+
+    <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #efedf6">
       <TestimonialsSection client:visible />
       <div class="text-center pb-16 -mt-8">
         <a
@@ -49,10 +53,11 @@ import FAQSection from '../components/islands/FAQSection';
       </div>
     </div>
 
-    <LeadMagnetSection client:visible />
+    <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff1">
+      <LeadMagnetSection client:visible />
+    </div>
 
-    <!-- FAQ + CTA -->
-    <div class="relative">
+    <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #f5eff2">
       <FAQSection client:visible />
       <div class="text-center pb-16 -mt-8">
         <a
@@ -65,14 +70,17 @@ import FAQSection from '../components/islands/FAQSection';
       </div>
     </div>
 
-    <CTABanner
-      title="¿Lista para dar el primer paso?"
-      highlight="No tienes que hacerlo sola."
-      description="Reserva tu sesion de valoracion y empecemos juntas. Sin compromiso."
-      primaryCta={{ label: 'Reservar mi primera sesion', href: '/contacto' }}
-      secondaryCta={{ label: 'Escribeme por WhatsApp', href: 'https://wa.me/34600000000' }}
-    />
+    <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
+      <CTABanner
+        title="¿Lista para dar el primer paso?"
+        highlight="No tienes que hacerlo sola."
+        description="Reserva tu sesion de valoracion y empecemos juntas. Sin compromiso."
+        primaryCta={{ label: 'Reservar mi primera sesion', href: '/contacto' }}
+        secondaryCta={{ label: 'Escribeme por WhatsApp', href: 'https://wa.me/34600000000' }}
+      />
+    </div>
 
     <FooterSection />
+    <StickyMobileCTA client:load />
   </main>
 </Layout>

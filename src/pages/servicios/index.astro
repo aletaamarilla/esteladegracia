@@ -22,64 +22,67 @@ import { individualTherapy, groupTherapy } from '../../data/services';
   />
 
   <!-- Como funciona: 3 pasos -->
-  <section class="py-16 lg:py-24 bg-white relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-72 h-72 bg-[#cfcdff]/15 rounded-full blur-3xl"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="text-center mb-14">
-        <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Tu proceso</span>
-        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
-          Empezar es mas facil de lo que{' '}
-          <span class="text-[#98465d]">piensas</span>
-        </h2>
-      </div>
+  <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f4eced">
+    <section class="py-16 lg:py-24 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-72 h-72 bg-[#cfcdff]/15 rounded-full blur-3xl"></div>
+      <div class="container mx-auto px-5 relative">
+        <div class="text-center mb-10 md:mb-14">
+          <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Tu proceso</span>
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+            Empezar es mas facil de lo que{' '}
+            <span class="text-[#98465d]">piensas</span>
+          </h2>
+        </div>
 
-      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-        {[
-          {
-            step: '01',
-            title: 'Contactame',
-            desc: 'Escribeme por formulario o WhatsApp. Cuéntame brevemente que te trae aqui.',
-            color: 'from-[#98465d] to-[#9591eb]',
-            icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-          },
-          {
-            step: '02',
-            title: 'Sesion de valoracion',
-            desc: 'Una primera conversacion para conocernos y ver como puedo ayudarte. Sin compromiso.',
-            color: 'from-[#9591eb] to-[#cfcdff]',
-            icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>',
-          },
-          {
-            step: '03',
-            title: 'Tu viaje empieza',
-            desc: 'Diseñamos juntas tu plan terapeutico y empezamos a trabajar en tus objetivos.',
-            color: 'from-[#cfcdff] to-[#98465d]/50',
-            icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
-          },
-        ].map((item) => (
-          <div class="group text-center hover-glow rounded-3xl p-8 cursor-default">
-            <div class={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={item.icon} />
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          {[
+            {
+              step: '01',
+              title: 'Contactame',
+              desc: 'Escribeme por formulario o WhatsApp. Cuéntame brevemente que te trae aqui.',
+              color: 'from-[#98465d] to-[#9591eb]',
+              icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+            },
+            {
+              step: '02',
+              title: 'Sesion de valoracion',
+              desc: 'Una primera conversacion para conocernos y ver como puedo ayudarte. Sin compromiso.',
+              color: 'from-[#9591eb] to-[#cfcdff]',
+              icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>',
+            },
+            {
+              step: '03',
+              title: 'Tu viaje empieza',
+              desc: 'Diseñamos juntas tu plan terapeutico y empezamos a trabajar en tus objetivos.',
+              color: 'from-[#cfcdff] to-[#98465d]/50',
+              icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+            },
+          ].map((item) => (
+            <div class="group text-center hover-glow rounded-3xl p-5 md:p-8 cursor-default">
+              <div class={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={item.icon} />
+              </div>
+              <span class="text-xs font-bold text-[#9591eb] tracking-widest uppercase">{item.step}</span>
+              <h3 class="font-display text-xl text-[#5d5a5a] mt-2 mb-3">{item.title}</h3>
+              <p class="text-sm text-[#5d5a5a]/70 leading-relaxed">{item.desc}</p>
             </div>
-            <span class="text-xs font-bold text-[#9591eb] tracking-widest uppercase">{item.step}</span>
-            <h3 class="font-display text-xl text-[#5d5a5a] mt-2 mb-3">{item.title}</h3>
-            <p class="text-sm text-[#5d5a5a]/70 leading-relaxed">{item.desc}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <!-- Connector line (desktop) -->
-      <div class="hidden md:block max-w-3xl mx-auto mt-[-7rem] mb-8 relative z-0">
-        <div class="h-px bg-gradient-to-r from-[#98465d]/20 via-[#9591eb]/30 to-[#cfcdff]/20 mx-24"></div>
+        <!-- Connector line (desktop) -->
+        <div class="hidden md:block max-w-3xl mx-auto mt-[-7rem] mb-8 relative z-0">
+          <div class="h-px bg-gradient-to-r from-[#98465d]/20 via-[#9591eb]/30 to-[#cfcdff]/20 mx-24"></div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <!-- Comparativa visual -->
-  <section class="py-16 lg:py-24 bg-[#f6f3f5] relative overflow-hidden">
+  <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #efedf6">
+  <section class="py-16 lg:py-24 relative overflow-hidden">
     <div class="absolute bottom-0 right-0 w-80 h-80 bg-[#98465d]/5 rounded-full blur-3xl"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="text-center mb-14">
+    <div class="container mx-auto px-5 relative">
+      <div class="text-center mb-10 md:mb-14">
         <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Compara</span>
         <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
           Dos caminos,{' '}
@@ -94,7 +97,7 @@ import { individualTherapy, groupTherapy } from '../../data/services';
           <div class="relative bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full">
             <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#98465d] to-[#9591eb]"></div>
 
-            <div class="p-8 md:p-10 flex-1 flex flex-col">
+            <div class="p-5 md:p-10 flex-1 flex flex-col">
               <div class="flex items-center justify-between mb-6">
                 <div class="w-14 h-14 bg-[#98465d]/10 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-[#98465d]/15 transition-all duration-300">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -160,7 +163,7 @@ import { individualTherapy, groupTherapy } from '../../data/services';
               </div>
             </div>
 
-            <div class="p-8 md:p-10 flex-1 flex flex-col">
+            <div class="p-5 md:p-10 flex-1 flex flex-col">
               <div class="flex items-center mb-6">
                 <div class="w-14 h-14 bg-[#9591eb]/10 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-[#9591eb]/15 transition-all duration-300">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -214,31 +217,35 @@ import { individualTherapy, groupTherapy } from '../../data/services';
       </div>
     </div>
   </section>
+  </div>
 
   <!-- Trust bar -->
-  <section class="py-12 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-wrap justify-center gap-8 md:gap-16">
-        {[
-          { value: '12+', label: 'Anos de experiencia' },
-          { value: '500+', label: 'Pacientes atendidos' },
-          { value: '4.9/5', label: 'Valoracion media' },
-          { value: '100%', label: 'Online' },
-        ].map((stat) => (
-          <div class="group text-center cursor-default">
-            <p class="text-2xl md:text-3xl font-bold text-[#98465d] group-hover:scale-110 transition-transform duration-300">{stat.value}</p>
-            <p class="text-sm text-[#5d5a5a]/60 mt-1">{stat.label}</p>
-          </div>
-        ))}
+  <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff1">
+    <section class="py-12">
+      <div class="container mx-auto px-5">
+        <div class="flex flex-wrap justify-center gap-6 md:gap-16">
+          {[
+            { value: '12+', label: 'Anos de experiencia' },
+            { value: '500+', label: 'Pacientes atendidos' },
+            { value: '4.9/5', label: 'Valoracion media' },
+            { value: '100%', label: 'Online' },
+          ].map((stat) => (
+            <div class="group text-center cursor-default">
+              <p class="text-2xl md:text-3xl font-bold text-[#98465d] group-hover:scale-110 transition-transform duration-300">{stat.value}</p>
+              <p class="text-sm text-[#5d5a5a]/60 mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <!-- Enfoque terapeutico -->
-  <section class="py-16 lg:py-24 bg-[#f6f3f5] relative overflow-hidden">
+  <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #efedf6">
+  <section class="py-16 lg:py-24 relative overflow-hidden">
     <div class="absolute top-10 right-10 w-60 h-60 bg-[#9591eb]/10 rounded-full blur-3xl"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="text-center mb-14">
+    <div class="container mx-auto px-5 relative">
+      <div class="text-center mb-10 md:mb-14">
         <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Mi enfoque</span>
         <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
           Terapia basada en{' '}
@@ -288,12 +295,14 @@ import { individualTherapy, groupTherapy } from '../../data/services';
       </div>
     </div>
   </section>
+  </div>
 
   <!-- FAQ rapido -->
-  <section class="py-16 lg:py-24 bg-white">
-    <div class="container mx-auto px-4">
+  <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff2">
+  <section class="py-16 lg:py-24">
+    <div class="container mx-auto px-5">
       <div class="max-w-3xl mx-auto">
-        <div class="text-center mb-12">
+        <div class="text-center mb-10 md:mb-12">
           <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
             Dudas{' '}
             <span class="text-[#9591eb]">frecuentes</span>
@@ -327,12 +336,15 @@ import { individualTherapy, groupTherapy } from '../../data/services';
       </div>
     </div>
   </section>
+  </div>
 
-  <CTABanner
-    title="El primer paso es el mas importante."
-    highlight="Dalo hoy."
-    description="Contactame sin compromiso y te ayudo a encontrar la opcion que mejor se adapte a ti."
-    primaryCta={{ label: "Reservar sesion", href: "/contacto" }}
-    secondaryCta={{ label: "Escribeme por WhatsApp", href: "https://wa.me/34600000000" }}
-  />
+  <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
+    <CTABanner
+      title="El primer paso es el mas importante."
+      highlight="Dalo hoy."
+      description="Contactame sin compromiso y te ayudo a encontrar la opcion que mejor se adapte a ti."
+      primaryCta={{ label: "Reservar sesion", href: "/contacto" }}
+      secondaryCta={{ label: "Escribeme por WhatsApp", href: "https://wa.me/34600000000" }}
+    />
+  </div>
 </PageLayout>

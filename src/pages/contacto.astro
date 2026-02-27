@@ -9,46 +9,51 @@ import ContactSection from '../components/islands/ContactSection';
   description="Reserva tu primera sesion o enviame un mensaje. Respondo en menos de 24 horas."
   showStickyMobileCTA={false}
 >
-  <PageHero
-    label="Contacto"
-    title="Da el primer paso."
-    highlight="Estoy aqui."
-    highlightColor="purple"
-    description="Elige como prefieres contactarme. Sin compromiso, solo una conversacion para conocernos."
-    breadcrumbs={[
-      { label: "Inicio", href: "/" },
-      { label: "Contacto" },
-    ]}
-  />
+  <!-- Breadcrumbs only, no duplicate hero -->
+  <div class="bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5] pt-6 pb-2">
+    <div class="container mx-auto px-5">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
+          <li><a href="/" class="hover:text-[#98465d] transition-colors">Inicio</a></li>
+          <span class="text-[#cfcdff]">/</span>
+          <li class="text-[#5d5a5a] font-medium">Contacto</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
 
-  <ContactSection client:visible />
+  <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f4eced">
+    <ContactSection client:visible />
+  </div>
 
   <!-- Additional Info -->
-  <section class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
-        <div class="group bg-[#f6f3f5] rounded-3xl p-8 hover-glow cursor-default">
-          <div class="w-12 h-12 bg-[#98465d]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#98465d]/20 transition-all duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #f6f3f5">
+    <section class="py-16">
+      <div class="container mx-auto px-5">
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto text-center">
+          <div class="group bg-[#f6f3f5] rounded-3xl p-5 md:p-8 hover-glow cursor-default">
+            <div class="w-12 h-12 bg-[#98465d]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#98465d]/20 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3 class="font-semibold text-[#5d5a5a] mb-2">Tiempo de respuesta</h3>
+            <p class="text-sm text-[#5d5a5a]/70">Menos de 24 horas. Lunes a Viernes, 9:00 - 20:00.</p>
           </div>
-          <h3 class="font-semibold text-[#5d5a5a] mb-2">Tiempo de respuesta</h3>
-          <p class="text-sm text-[#5d5a5a]/70">Menos de 24 horas. Lunes a Viernes, 9:00 - 20:00.</p>
-        </div>
-        <div class="group bg-[#f6f3f5] rounded-3xl p-8 hover-glow cursor-default">
-          <div class="w-12 h-12 bg-[#9591eb]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#9591eb]/20 transition-all duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <div class="group bg-[#f6f3f5] rounded-3xl p-5 md:p-8 hover-glow cursor-default">
+            <div class="w-12 h-12 bg-[#9591eb]/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#9591eb]/20 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9591eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            </div>
+            <h3 class="font-semibold text-[#5d5a5a] mb-2">100% Online</h3>
+            <p class="text-sm text-[#5d5a5a]/70">Terapia desde la comodidad de tu hogar. Sin barreras geograficas.</p>
           </div>
-          <h3 class="font-semibold text-[#5d5a5a] mb-2">100% Online</h3>
-          <p class="text-sm text-[#5d5a5a]/70">Terapia desde la comodidad de tu hogar. Sin barreras geograficas.</p>
-        </div>
-        <div class="group bg-[#f6f3f5] rounded-3xl p-8 hover-glow cursor-default">
-          <div class="w-12 h-12 bg-[#cfcdff]/50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#cfcdff]/70 transition-all duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5d5a5a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+          <div class="group bg-[#f6f3f5] rounded-3xl p-5 md:p-8 hover-glow cursor-default">
+            <div class="w-12 h-12 bg-[#cfcdff]/50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#cfcdff]/70 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5d5a5a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+            </div>
+            <h3 class="font-semibold text-[#5d5a5a] mb-2">Confidencial</h3>
+            <p class="text-sm text-[#5d5a5a]/70">Tu informacion es completamente privada y protegida.</p>
           </div>
-          <h3 class="font-semibold text-[#5d5a5a] mb-2">Confidencial</h3>
-          <p class="text-sm text-[#5d5a5a]/70">Tu informacion es completamente privada y protegida.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </PageLayout>

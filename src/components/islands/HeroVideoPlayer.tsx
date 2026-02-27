@@ -9,63 +9,57 @@ export default function HeroVideoPlayer() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="flex flex-col md:hidden h-full">
-        <div
-          className="relative w-full h-full flex flex-col"
-          onTouchStart={() => setIsHovered(true)}
-          onTouchEnd={() => setIsHovered(false)}
-        >
-          {/* Top phrase */}
-          <div className="pt-4 pb-3 text-center">
-            <p className="font-serif text-sm text-[#5d5a5a]/80 italic px-4">
-              {"\"A veces solo necesitas que alguien te escuche de verdad\""}
-            </p>
+      <div className="flex flex-col md:hidden h-full justify-center px-1">
+        <div className="space-y-5 text-center">
+          <div className="inline-flex items-center gap-2 bg-[#cfcdff]/40 px-4 py-2 rounded-full">
+            <HugIcon className="w-4 h-4" fill="#98465d" />
+            <span className="text-xs font-medium text-[#5d5a5a]">Un espacio seguro para ti</span>
           </div>
 
-          {/* Video */}
-          <div className="relative flex-1 mx-4 rounded-3xl overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#9591eb]/40 to-[#98465d]/40" />
-            <div className="absolute inset-0 flex items-center justify-center bg-[#cfcdff]/30 backdrop-blur-sm">
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg cursor-pointer mx-auto">
-                  <Play className="w-7 h-7 text-[#98465d] ml-1" fill="#98465d" />
+          <h1 className="font-display text-[1.75rem] leading-tight text-[#5d5a5a] text-balance">
+            Psicologia <span className="text-[#98465d]">sin</span> distancia.{" "}
+            <span className="block mt-1 text-[#9591eb]">Autentica, cercana y real.</span>
+          </h1>
+
+          <p className="font-serif text-sm text-[#5d5a5a]/80 leading-relaxed max-w-xs mx-auto">
+            La terapia no tiene que sentirse fria. Aqui encontraras calidez, comprension y conexion genuina.
+          </p>
+
+          <div className="flex flex-col gap-3 px-4">
+            <a href="/contacto">
+              <Button
+                className="w-full bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full py-5 text-base font-medium shadow-lg"
+              >
+                Reservar cita
+              </Button>
+            </a>
+            <a href="/sobre-mi">
+              <Button
+                variant="outline"
+                className="w-full border-2 border-[#9591eb] text-[#9591eb] hover:bg-[#9591eb] hover:text-white rounded-full py-5 text-base font-medium bg-transparent"
+              >
+                Saber mas
+              </Button>
+            </a>
+          </div>
+
+          {/* Compact video card */}
+          <div className="mx-2 mt-2">
+            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#9591eb]/40 to-[#98465d]/40" />
+              <div className="absolute inset-0 flex items-center justify-center bg-[#cfcdff]/30 backdrop-blur-sm">
+                <div className="text-center space-y-2">
+                  <div className="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center shadow-lg mx-auto">
+                    <Play className="w-6 h-6 text-[#98465d] ml-0.5" fill="#98465d" />
+                  </div>
+                  <p className="text-[#5d5a5a] font-medium text-xs">Conoceme en 2 minutos</p>
                 </div>
-                <p className="text-[#5d5a5a] font-medium text-sm">Conoceme en 2 minutos</p>
               </div>
-            </div>
-
-            {/* Badge inside video */}
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg">
-              <p className="text-xs text-[#5d5a5a]">
-                <span className="font-bold text-[#98465d]">500+</span> vidas transformadas
-              </p>
-            </div>
-          </div>
-
-          {/* Bottom text and CTA */}
-          <div className="py-4 px-4 space-y-3 text-center">
-            <h1 className="font-display text-xl text-[#5d5a5a] leading-tight">
-              Psicologia <span className="text-[#98465d]">sin distancia</span>
-            </h1>
-
-            <div className="flex gap-2 justify-center">
-              <a href="/contacto">
-                <Button
-                  size="sm"
-                  className="bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-5 py-4 text-sm font-medium"
-                >
-                  Reservar cita
-                </Button>
-              </a>
-              <a href="/sobre-mi">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-2 border-[#9591eb] text-[#9591eb] hover:bg-[#9591eb] hover:text-white rounded-full px-5 py-4 text-sm font-medium bg-transparent"
-                >
-                  Saber mas
-                </Button>
-              </a>
+              <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-md">
+                <p className="text-[10px] text-[#5d5a5a]">
+                  <span className="font-bold text-[#98465d]">500+</span> vidas transformadas
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -117,7 +111,7 @@ export default function HeroVideoPlayer() {
           onMouseLeave={() => setIsHovered(false)}
         >
           <div
-            className={`relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl transition-transform duration-700 ease-out ${isHovered ? 'scale-[1.02]' : ''}`}
+            className={`relative aspect-video rounded-3xl overflow-hidden shadow-xl transition-transform duration-700 ease-out ${isHovered ? 'scale-[1.02]' : ''}`}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#9591eb]/40 to-[#98465d]/40" />
             <div className="absolute inset-0 flex items-center justify-center bg-[#cfcdff]/30 backdrop-blur-sm">

@@ -15,17 +15,14 @@ export default function LeadMagnetSection() {
   }
 
   return (
-    <section className="py-20 lg:py-32 bg-white relative overflow-hidden">
-      {/* Decorative background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#98465d]/5 via-transparent to-[#9591eb]/5" />
+    <section className="py-14 md:py-20 lg:py-32 relative">
+      {/* Organic shapes — centrados verticalmente para no crear cortes en los bordes */}
+      <div className="absolute top-1/3 -left-10 w-40 h-40 bg-[#cfcdff]/30 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute bottom-1/3 -right-10 w-60 h-60 bg-[#98465d]/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Organic shapes */}
-      <div className="absolute top-10 left-10 w-40 h-40 bg-[#cfcdff]/30 rounded-full blur-2xl" />
-      <div className="absolute bottom-10 right-10 w-60 h-60 bg-[#98465d]/10 rounded-full blur-3xl" />
-
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-5 relative">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-[#f6f3f5] to-white rounded-[3rem] p-8 md:p-12 lg:p-16 shadow-xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#f6f3f5] to-white rounded-3xl p-5 md:p-12 lg:p-16 shadow-lg relative overflow-hidden">
             {/* Corner decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#cfcdff]/30 rounded-bl-full" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#98465d]/10 rounded-tr-full" />
@@ -58,7 +55,7 @@ export default function LeadMagnetSection() {
               </div>
 
               {/* Form */}
-              <div className="bg-white rounded-3xl p-8 shadow-lg">
+              <div className="bg-white rounded-3xl p-5 md:p-8 shadow-lg">
                 {!isSubmitted ? (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">

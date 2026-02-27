@@ -18,11 +18,11 @@ const {
 const selectedTestimonials = testimonials.slice(0, count);
 ---
 
-<section class="py-20 lg:py-28 bg-[#f6f3f5] relative overflow-hidden">
+<section class="py-14 md:py-20 lg:py-28 relative overflow-hidden">
   <div class="absolute top-0 left-0 w-72 h-72 bg-[#9591eb]/10 rounded-full blur-3xl"></div>
 
-  <div class="container mx-auto px-4 relative">
-    <div class="text-center mb-14">
+  <div class="container mx-auto px-5 relative">
+    <div class="text-center mb-10 md:mb-14">
       <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Testimonios</span>
       <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
         {title}
@@ -31,7 +31,7 @@ const selectedTestimonials = testimonials.slice(0, count);
 
     <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
       {selectedTestimonials.map((testimonial) => (
-        <div class="hover-relief bg-white rounded-3xl p-8 shadow-lg">
+        <div class="hover-relief bg-white rounded-3xl p-5 md:p-8 shadow-lg">
           {/* Stars */}
           <div class="flex gap-1 mb-4">
             {Array.from({ length: testimonial.rating }).map(() => (

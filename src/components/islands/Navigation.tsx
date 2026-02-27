@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Heart, ChevronDown } from "lucide-react"
+import { Menu, X, ChevronDown, ChevronRight } from "lucide-react"
 import { HugIcon } from "@/components/icons/hug-icon"
 
 const navLinks = [
@@ -23,6 +23,7 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
+  const [mobileReady, setMobileReady] = useState(false)
   const [currentPath, setCurrentPath] = useState("")
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -33,7 +34,9 @@ export default function Navigation() {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
+      requestAnimationFrame(() => setMobileReady(true))
     } else {
+      setMobileReady(false)
       document.body.style.overflow = ""
     }
     return () => {
@@ -56,10 +59,15 @@ export default function Navigation() {
     return currentPath.startsWith(href)
   }
 
+  const closeMobile = () => {
+    setMobileReady(false)
+    setTimeout(() => setIsOpen(false), 300)
+  }
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#f6f3f5]/80 backdrop-blur-lg border-b border-[#cfcdff]/30">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-5">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <a href="/" className="flex items-center gap-3 group">
@@ -142,130 +150,145 @@ export default function Navigation() {
             </div>
 
             {/* Mobile Menu Button */}
-            {!isOpen && (
-              <button
-                className="md:hidden w-12 h-12 flex items-center justify-center text-[#98465d] rounded-full hover:bg-[#cfcdff]/30 transition-colors"
-                onClick={() => setIsOpen(true)}
-                aria-label="Abrir menu"
-              >
-                <Menu className="w-7 h-7 stroke-[2.5]" />
-              </button>
-            )}
+            <button
+              className="md:hidden w-11 h-11 flex items-center justify-center text-[#98465d] rounded-2xl hover:bg-[#98465d]/8 active:scale-95 transition-all"
+              onClick={() => setIsOpen(true)}
+              aria-label="Abrir menu"
+            >
+              <Menu className="w-6 h-6 stroke-[2]" />
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Navigation - Full Screen Overlay */}
+      {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden fixed inset-0 z-[100] overflow-hidden">
-          <div className="absolute inset-0 bg-[#f6f3f5]" />
+        <div className="md:hidden fixed inset-0 z-[100]">
+          {/* Backdrop */}
+          <div
+            className={`absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300 ${mobileReady ? "opacity-100" : "opacity-0"}`}
+            onClick={closeMobile}
+          />
 
-          {/* Floating Hearts Decoration */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[
-              { left: 8, size: 18, duration: 12, delay: 0, opacity: 0.12 },
-              { left: 25, size: 22, duration: 14, delay: 2, opacity: 0.1 },
-              { left: 45, size: 16, duration: 11, delay: 4, opacity: 0.14 },
-              { left: 65, size: 20, duration: 13, delay: 1, opacity: 0.11 },
-              { left: 85, size: 17, duration: 12, delay: 3, opacity: 0.13 },
-              { left: 15, size: 19, duration: 14, delay: 5, opacity: 0.1 },
-              { left: 55, size: 21, duration: 11, delay: 6, opacity: 0.12 },
-              { left: 75, size: 15, duration: 13, delay: 7, opacity: 0.14 },
-              { left: 92, size: 18, duration: 12, delay: 8, opacity: 0.11 },
-            ].map((heart, index) => (
-              <div
-                key={index}
-                className="absolute animate-float-up"
-                style={{
-                  left: `${heart.left}%`,
-                  bottom: "-30px",
-                  animationDelay: `${heart.delay}s`,
-                  animationDuration: `${heart.duration}s`,
-                }}
-              >
-                <Heart
-                  className="text-[#98465d]"
-                  fill={`rgba(152, 70, 93, ${heart.opacity})`}
-                  style={{
-                    width: heart.size,
-                    height: heart.size,
-                    opacity: heart.opacity,
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Close Button */}
-          <button
-            className="absolute top-6 right-4 w-12 h-12 flex items-center justify-center text-[#98465d] rounded-full hover:bg-[#cfcdff]/30 transition-colors z-10"
-            onClick={() => setIsOpen(false)}
-            aria-label="Cerrar menu"
+          {/* Panel */}
+          <div
+            className={`absolute top-0 right-0 bottom-0 w-[85%] max-w-sm bg-gradient-to-b from-[#f6f3f5] via-[#f6f3f5] to-[#f4eced] shadow-2xl transition-transform duration-300 ease-out ${
+              mobileReady ? "translate-x-0" : "translate-x-full"
+            }`}
           >
-            <X className="w-8 h-8 stroke-[2.5]" />
-          </button>
+            {/* Decorative blob */}
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#98465d]/[0.04] rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/3 right-0 w-32 h-32 bg-[#9591eb]/[0.06] rounded-full blur-3xl pointer-events-none" />
 
-          {/* Navigation Content */}
-          <div className="relative flex flex-col items-center justify-center h-full gap-4 px-8">
-            {navLinks.map((link) =>
-              link.children ? (
-                <div key={link.label} className="flex flex-col items-center">
-                  <div className="flex items-center gap-2 py-2">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 h-20 border-b border-[#cfcdff]/20">
+              <a href="/" className="flex items-center gap-2.5" onClick={closeMobile}>
+                <div className="w-9 h-9 bg-gradient-to-br from-[#98465d] to-[#9591eb] rounded-full flex items-center justify-center shadow-sm">
+                  <HugIcon className="w-6 h-6" fill="white" />
+                </div>
+                <span className="font-display text-[#5d5a5a] text-[15px]">
+                  Estela <span className="text-[#98465d]">de Gracia</span>
+                </span>
+              </a>
+              <button
+                className="w-10 h-10 flex items-center justify-center text-[#5d5a5a]/60 rounded-xl hover:bg-[#98465d]/8 hover:text-[#98465d] active:scale-95 transition-all"
+                onClick={closeMobile}
+                aria-label="Cerrar menu"
+              >
+                <X className="w-5 h-5 stroke-[2]" />
+              </button>
+            </div>
+
+            {/* Links */}
+            <div className="flex flex-col px-6 pt-6 pb-4 relative overflow-y-auto" style={{ maxHeight: "calc(100dvh - 80px)" }}>
+              <nav className="flex flex-col gap-0.5">
+                {navLinks.map((link, i) =>
+                  link.children ? (
+                    <div key={link.label}>
+                      <div className="flex items-center">
+                        <a
+                          href={link.href}
+                          onClick={closeMobile}
+                          className={`flex-1 flex items-center gap-3 px-4 py-3.5 rounded-2xl text-[17px] font-medium transition-all duration-200 ${
+                            isActive(link.href)
+                              ? "text-[#98465d] bg-[#98465d]/[0.06]"
+                              : "text-[#5d5a5a] hover:text-[#98465d] hover:bg-[#98465d]/[0.04]"
+                          }`}
+                          style={{ transitionDelay: `${i * 40}ms`, opacity: mobileReady ? 1 : 0, transform: mobileReady ? "translateX(0)" : "translateX(12px)" }}
+                        >
+                          {isActive(link.href) && (
+                            <span className="w-1 h-5 bg-gradient-to-b from-[#98465d] to-[#9591eb] rounded-full" />
+                          )}
+                          {link.label}
+                        </a>
+                        <button
+                          onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                          aria-label="Ver submenú de servicios"
+                          className="w-10 h-10 flex items-center justify-center text-[#5d5a5a]/40 hover:text-[#98465d] rounded-xl hover:bg-[#98465d]/[0.04] transition-all"
+                        >
+                          <ChevronDown
+                            className={`w-4.5 h-4.5 transition-transform duration-200 ${mobileServicesOpen ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                      </div>
+
+                      <div
+                        className={`overflow-hidden transition-all duration-200 ${mobileServicesOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+                      >
+                        <div className="ml-4 pl-4 border-l-2 border-[#cfcdff]/30 flex flex-col gap-0.5 py-1">
+                          {link.children.map((child) => (
+                            <a
+                              key={child.label}
+                              href={child.href}
+                              onClick={closeMobile}
+                              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[15px] transition-all duration-200 ${
+                                isActive(child.href)
+                                  ? "text-[#98465d] font-medium bg-[#98465d]/[0.05]"
+                                  : "text-[#5d5a5a]/70 hover:text-[#98465d] hover:bg-[#98465d]/[0.04]"
+                              }`}
+                            >
+                              <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                              {child.label}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
                     <a
+                      key={link.label}
                       href={link.href}
-                      className="text-3xl text-[#5d5a5a] hover:text-[#98465d] transition-all duration-300 font-serif font-medium tracking-wide"
-                      onClick={() => setIsOpen(false)}
+                      onClick={closeMobile}
+                      className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-[17px] font-medium transition-all duration-200 ${
+                        isActive(link.href)
+                          ? "text-[#98465d] bg-[#98465d]/[0.06]"
+                          : "text-[#5d5a5a] hover:text-[#98465d] hover:bg-[#98465d]/[0.04]"
+                      }`}
+                      style={{ transitionDelay: `${i * 40}ms`, opacity: mobileReady ? 1 : 0, transform: mobileReady ? "translateX(0)" : "translateX(12px)" }}
                     >
+                      {isActive(link.href) && (
+                        <span className="w-1 h-5 bg-gradient-to-b from-[#98465d] to-[#9591eb] rounded-full" />
+                      )}
                       {link.label}
                     </a>
-                    <button
-                      onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
-                      aria-label="Ver submenú de servicios"
-                      className="text-[#5d5a5a] hover:text-[#98465d] transition-colors"
-                    >
-                      <ChevronDown
-                        className={`w-6 h-6 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                  </div>
-                  {mobileServicesOpen && (
-                    <div className="flex flex-col items-center gap-2 mt-1">
-                      {link.children.map((child) => (
-                        <a
-                          key={child.label}
-                          href={child.href}
-                          className="text-xl text-[#5d5a5a]/80 hover:text-[#98465d] transition-colors font-serif"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {child.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-3xl text-[#5d5a5a] hover:text-[#98465d] transition-all duration-300 font-serif font-medium tracking-wide py-2"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+                  )
+                )}
+              </nav>
 
-            <div className="w-16 h-px bg-gradient-to-r from-transparent via-[#9591eb]/50 to-transparent my-2" />
+              {/* Divider */}
+              <div className="h-px bg-gradient-to-r from-[#cfcdff]/30 via-[#98465d]/10 to-transparent my-5 mx-4" />
 
-            <a href="/contacto" onClick={() => setIsOpen(false)}>
-              <Button className="bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-12 py-7 text-lg font-medium mt-2 shadow-lg hover:shadow-xl transition-all duration-300">
-                Reservar Cita
-              </Button>
-            </a>
+              {/* CTA */}
+              <a href="/contacto" onClick={closeMobile} className="block">
+                <Button className="w-full bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-2xl py-6 text-base font-medium shadow-lg shadow-[#98465d]/15 transition-all duration-300 hover:shadow-xl">
+                  Reservar Cita
+                </Button>
+              </a>
 
-            <p className="text-sm text-[#5d5a5a]/60 font-serif italic mt-6">
-              Un espacio seguro para ti
-            </p>
+              <p className="text-center text-[13px] text-[#5d5a5a]/40 font-serif italic mt-5">
+                Un espacio seguro para ti
+              </p>
+            </div>
           </div>
         </div>
       )}

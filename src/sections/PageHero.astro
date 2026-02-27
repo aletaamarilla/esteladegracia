@@ -30,7 +30,7 @@ const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#95
   <div class="absolute -top-20 -right-20 w-80 h-80 bg-[#cfcdff]/20 rounded-full blur-3xl"></div>
   <div class="absolute bottom-0 -left-20 w-72 h-72 bg-[#98465d]/5 rounded-full blur-3xl"></div>
 
-  <div class="container mx-auto px-4 relative">
+  <div class="container mx-auto px-5 relative">
     {breadcrumbs && breadcrumbs.length > 0 && (
       <nav class="mb-8" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
@@ -56,7 +56,7 @@ const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#95
       <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">
         {label}
       </span>
-      <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+      <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
         {title}{' '}
         {highlight && <span class={highlightClass}>{highlight}</span>}
       </h1>
@@ -69,4 +69,6 @@ const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#95
 
     <slot />
   </div>
+
+  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-[#f0eef5] pointer-events-none"></div>
 </section>

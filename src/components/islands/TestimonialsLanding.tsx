@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, Play, Heart, X, Quote, MessageCircle } from "lucide-react"
+import { Star, Play, Heart, X, Quote } from "lucide-react"
 import { testimonials } from "@/data/testimonials"
 
 type FilterType = "all" | "individual" | "group"
@@ -26,6 +26,7 @@ export default function TestimonialsLanding() {
     : testimonials.filter((t) => t.serviceType === filter)
 
   useEffect(() => {
+    cardRefs.current = []
     setVisibleCards(new Set())
     const timer = setTimeout(() => {
       const observer = new IntersectionObserver(
@@ -47,9 +48,6 @@ export default function TestimonialsLanding() {
     return () => clearTimeout(timer)
   }, [filter])
 
-  const featured = testimonials[0]
-  const rest = filtered.slice(filter === "all" ? 1 : 0)
-
   const filters: { key: FilterType; label: string }[] = [
     { key: "all", label: "Todos" },
     { key: "individual", label: "Terapia Individual" },
@@ -59,27 +57,27 @@ export default function TestimonialsLanding() {
   return (
     <div className="relative">
       {/* Trust Stats Header */}
-      <section className="py-10 bg-white border-b border-[#cfcdff]/20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
+      <section className="py-8 md:py-10 border-b border-[#cfcdff]/20">
+        <div className="container mx-auto px-5">
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-14">
             <div className="flex items-center gap-3">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400" fill="#facc15" />
+                  <Star key={i} className="w-4 md:w-5 h-4 md:h-5 text-yellow-400" fill="#facc15" />
                 ))}
               </div>
               <div>
-                <span className="text-2xl font-bold text-[#98465d]">4.9</span>
+                <span className="text-xl md:text-2xl font-bold text-[#98465d]">4.9</span>
                 <span className="text-[#5d5a5a]/60 text-sm ml-1">/ 5</span>
               </div>
             </div>
-            <div className="w-px h-8 bg-[#cfcdff]/40 hidden md:block" />
+            <div className="w-px h-6 bg-[#cfcdff]/40" />
             <div className="text-center">
-              <span className="text-2xl font-bold text-[#98465d]">50+</span>
-              <p className="text-xs text-[#5d5a5a]/60 mt-0.5">Resenas verificadas</p>
+              <span className="text-xl md:text-2xl font-bold text-[#98465d]">50+</span>
+              <p className="text-[10px] md:text-xs text-[#5d5a5a]/60 mt-0.5">Resenas verificadas</p>
             </div>
-            <div className="w-px h-8 bg-[#cfcdff]/40 hidden md:block" />
-            <div className="flex items-center gap-2">
+            <div className="w-px h-6 bg-[#cfcdff]/40 hidden md:block" />
+            <div className="hidden md:flex items-center gap-2">
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -92,71 +90,15 @@ export default function TestimonialsLanding() {
         </div>
       </section>
 
-      {/* Featured Testimonial */}
-      {filter === "all" && (
-        <section className="py-16 lg:py-20 bg-[#f6f3f5] relative overflow-hidden">
-          <div className="absolute -top-20 -left-20 w-80 h-80 bg-[#cfcdff]/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#98465d]/5 rounded-full blur-3xl" />
-
-          <div className="container mx-auto px-4 relative">
-            <div className="max-w-4xl mx-auto">
-              <div className="hover-relief-rose bg-white rounded-[2rem] p-8 md:p-12 shadow-xl">
-                <div className="flex flex-col md:flex-row gap-8 items-start">
-                  {/* Video thumbnail */}
-                  {featured.hasVideo && (
-                    <div
-                      className="relative w-full md:w-48 h-48 md:h-56 rounded-2xl overflow-hidden flex-shrink-0 cursor-pointer group"
-                      onClick={() => setActiveVideo(0)}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#98465d]/50 to-[#9591eb]/50" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <Play className="w-7 h-7 text-[#98465d] ml-1" fill="#98465d" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                        <Heart className="w-3.5 h-3.5 text-[#98465d]" fill="#98465d" />
-                        <span className="text-xs font-medium text-[#5d5a5a]">Momento del abrazo</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <StarRating rating={featured.rating} size={20} />
-
-                    <blockquote className="mt-5 mb-6">
-                      <Quote className="w-8 h-8 text-[#cfcdff]/50 mb-2" />
-                      <p className="font-serif text-xl md:text-2xl text-[#5d5a5a] leading-relaxed italic">
-                        "{featured.text}"
-                      </p>
-                    </blockquote>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-[#f6f3f5]">
-                      <div>
-                        <p className="font-semibold text-[#5d5a5a] text-lg">{featured.name}</p>
-                        <p className="text-sm text-[#5d5a5a]/50">{featured.date} · {featured.source}</p>
-                      </div>
-                      <span className="hidden sm:inline-flex items-center gap-1.5 text-xs bg-[#98465d]/8 text-[#98465d] px-3 py-1.5 rounded-full font-medium">
-                        <MessageCircle className="w-3.5 h-3.5" />
-                        Terapia {featured.serviceType === "individual" ? "Individual" : "Grupal"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Filter + Grid */}
-      <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
+      <section className="py-10 md:py-16 lg:py-24 relative overflow-hidden">
         <div className="absolute top-20 right-0 w-72 h-72 bg-[#9591eb]/8 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -left-24 w-80 h-80 bg-[#98465d]/[0.04] rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-1/4 w-64 h-64 bg-[#98465d]/[0.03] rounded-full blur-3xl" />
 
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-5 relative">
           {/* Filter pills */}
-          <div className="flex flex-wrap justify-center gap-3 mb-14">
+          <div className="flex flex-wrap justify-center gap-3 mb-10 md:mb-14">
             {filters.map((f) => (
               <button
                 key={f.key}
@@ -173,8 +115,8 @@ export default function TestimonialsLanding() {
           </div>
 
           {/* Testimonial grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-            {rest.map((testimonial, index) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
+            {filtered.map((testimonial, index) => {
               const globalIndex = testimonials.indexOf(testimonial)
               const isVisible = visibleCards.has(index)
 
@@ -186,7 +128,7 @@ export default function TestimonialsLanding() {
                   className={`transition-all duration-700 ${
                     isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
-                  style={{ transitionDelay: `${index * 0.1}s` }}
+                  style={{ transitionDelay: `${Math.min(index * 0.1, 0.6)}s` }}
                 >
                   <Card className="group hover-relief bg-white border-0 shadow-md rounded-3xl overflow-hidden h-full">
                     {/* Video thumbnail strip */}
@@ -237,8 +179,8 @@ export default function TestimonialsLanding() {
       </section>
 
       {/* Mid-page CTA */}
-      <section className="py-14 bg-gradient-to-r from-[#f6f3f5] via-[#cfcdff]/15 to-[#f6f3f5]">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-14">
+        <div className="container mx-auto px-5 text-center">
           <p className="font-serif text-lg text-[#5d5a5a]/80 italic mb-5">
             Cada historia empezo con un primer mensaje...
           </p>

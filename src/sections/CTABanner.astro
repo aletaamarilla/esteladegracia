@@ -2,7 +2,7 @@
 interface Props {
   title: string;
   highlight?: string;
-  highlightColor?: 'rose' | 'purple';
+  highlightColor?: 'rose' | 'purple'; // kept for backwards compat
   description?: string;
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
@@ -11,23 +11,17 @@ interface Props {
 const {
   title,
   highlight,
-  highlightColor = 'rose',
   description,
   primaryCta,
   secondaryCta,
 } = Astro.props;
-
-const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#9591eb]';
 ---
 
-<section class="py-20 lg:py-28 bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5] relative overflow-hidden">
-  <div class="absolute top-10 right-10 w-40 h-40 bg-[#98465d]/5 rounded-full blur-3xl"></div>
-  <div class="absolute bottom-10 left-10 w-60 h-60 bg-[#9591eb]/10 rounded-full blur-3xl"></div>
-
-  <div class="container mx-auto px-4 relative text-center">
-    <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+<section class="py-14 md:py-20 lg:py-28 relative">
+  <div class="container mx-auto px-5 text-center">
+    <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
       {title}{' '}
-      {highlight && <span class={highlightClass}>{highlight}</span>}
+      {highlight && <span class="text-[#98465d]">{highlight}</span>}
     </h2>
 
     {description && (

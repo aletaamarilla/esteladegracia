@@ -35,8 +35,9 @@ const categories = [
     ]}
   />
 
-  <section class="py-16 lg:py-24 bg-white">
-    <div class="container mx-auto px-4">
+  <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f5eff2">
+  <section class="py-16 lg:py-24">
+    <div class="container mx-auto px-5">
       <!-- Category filters -->
       <div class="flex flex-wrap gap-2 mb-12 justify-center">
         {categories.map((cat) => (
@@ -58,7 +59,7 @@ const categories = [
       {featuredPost && (
         <div class="mb-12 blog-card" data-category={featuredPost.data.category}>
           <a href={`/blog/${featuredPost.slug}`} class="group block">
-            <article class="bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/10 to-white rounded-3xl p-8 md:p-12 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+            <article class="bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/10 to-white rounded-3xl p-5 md:p-12 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden">
               <span class="absolute top-6 right-6 bg-[#98465d] text-white text-xs font-medium px-3 py-1 rounded-full">
                 Destacado
               </span>
@@ -108,13 +109,16 @@ const categories = [
       </div>
     </div>
   </section>
+  </div>
 
-  <CTABanner
-    title="¿Necesitas apoyo profesional?"
-    description="Los articulos informan, pero la terapia transforma."
-    primaryCta={{ label: 'Reservar sesion', href: '/contacto' }}
-    secondaryCta={{ label: 'Conoce mis servicios', href: '/servicios' }}
-  />
+  <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
+    <CTABanner
+      title="¿Necesitas apoyo profesional?"
+      description="Los articulos informan, pero la terapia transforma."
+      primaryCta={{ label: 'Reservar sesion', href: '/contacto' }}
+      secondaryCta={{ label: 'Conoce mis servicios', href: '/servicios' }}
+    />
+  </div>
 </PageLayout>
 
 <script>

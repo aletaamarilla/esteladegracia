@@ -38,13 +38,13 @@ export default function AboutHero({
   return (
     <section
       ref={sectionRef}
-      className="relative bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5] pt-8 pb-16 lg:pt-12 lg:pb-24 overflow-hidden"
+      className="relative pt-8 pb-16 lg:pt-12 lg:pb-24 overflow-hidden"
     >
       {/* Decorative blurs */}
       <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#cfcdff]/30 rounded-full blur-3xl" />
       <div className="absolute bottom-0 -left-20 w-72 h-72 bg-[#98465d]/10 rounded-full blur-3xl" />
 
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-5 relative">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm mb-8">
           <a href="/" className="text-[#5d5a5a]/60 hover:text-[#98465d] transition-colors">

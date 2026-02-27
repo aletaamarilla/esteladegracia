@@ -129,7 +129,7 @@ export default function EmailGate({ resources }: EmailGateProps) {
 
       {/* Email gate overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="bg-white rounded-3xl p-8 md:p-10 shadow-xl max-w-md w-full mx-4 text-center">
+        <div className="bg-white rounded-3xl p-5 md:p-10 shadow-xl max-w-md w-full mx-4 text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-[#98465d]/10 to-[#9591eb]/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"

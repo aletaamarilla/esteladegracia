@@ -2,21 +2,23 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Award, Users, GraduationCap, Palette, Plane, Globe } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
 
-
 function FloatingHearts({ isVisible }: { isVisible: boolean }) {
-  const [hearts, setHearts] = useState<Array<{ id: number; left: number; delay: number; size: number; duration: number; opacity: number }>>([])
+  const [hearts, setHearts] = useState<
+    Array<{ id: number; left: number; delay: number; size: number; duration: number; opacity: number }>
+  >([])
 
   useEffect(() => {
     if (isVisible) {
-      const newHearts = Array.from({ length: 20 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        delay: Math.random() * 4,
-        size: 20 + Math.random() * 32,
-        duration: 5 + Math.random() * 4,
-        opacity: 0.15 + Math.random() * 0.25,
-      }))
-      setHearts(newHearts)
+      setHearts(
+        Array.from({ length: 10 }, (_, i) => ({
+          id: i,
+          left: 5 + Math.random() * 90,
+          delay: Math.random() * 6,
+          size: 14 + Math.random() * 10,
+          duration: 10 + Math.random() * 8,
+          opacity: 0.08 + Math.random() * 0.1,
+        }))
+      )
     } else {
       setHearts([])
     }
@@ -30,27 +32,28 @@ function FloatingHearts({ isVisible }: { isVisible: boolean }) {
           className="absolute animate-float-up"
           style={{
             left: `${heart.left}%`,
-            bottom: '-60px',
+            bottom: "-30px",
             animationDelay: `${heart.delay}s`,
             animationDuration: `${heart.duration}s`,
           }}
         >
-          <span
-            className="drop-shadow-sm select-none"
-            style={{
-              fontSize: heart.size,
-              opacity: heart.opacity + 0.3,
-              lineHeight: 1,
-            }}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={heart.size}
+            height={heart.size}
+            viewBox="0 0 24 24"
+            fill={`rgba(152, 70, 93, ${heart.opacity})`}
+            stroke="none"
             aria-hidden="true"
           >
-            💖
-          </span>
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+          </svg>
         </div>
       ))}
     </div>
   )
 }
+
 export default function AboutAnimated() {
   const [isInView, setIsInView] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
@@ -78,12 +81,10 @@ export default function AboutAnimated() {
   ]
 
   return (
-    <section ref={sectionRef} id="about" className="py-20 lg:py-32 bg-[#f6f3f5] relative overflow-hidden">
+    <section ref={sectionRef} id="about" className="py-14 md:py-20 lg:py-32 relative overflow-hidden">
       <FloatingHearts isVisible={isInView} />
-
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
+      <div className="container mx-auto px-5 relative z-10">
+        <div className="text-center mb-10 md:mb-16">
           <span className="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Sobre Mi</span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
             Mas que titulos.{" "}
@@ -99,8 +100,8 @@ export default function AboutAnimated() {
               <h3 className="text-xl font-semibold text-[#5d5a5a]">La Profesional</h3>
             </div>
 
-            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl rounded-3xl overflow-hidden">
-              <CardContent className="p-8">
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg rounded-3xl overflow-hidden">
+              <CardContent className="p-5 md:p-8">
                 <div className="space-y-6">
                   {professionalStats.map((stat, index) => (
                     <div
@@ -129,10 +130,10 @@ export default function AboutAnimated() {
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#98465d]/10 to-[#9591eb]/10 rounded-[3rem] -rotate-2" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#98465d]/10 to-[#9591eb]/10 rounded-3xl -rotate-2" />
 
-              <Card className="relative bg-white/90 backdrop-blur-sm border-0 shadow-xl rounded-3xl overflow-hidden">
-                <CardContent className="p-8">
+              <Card className="relative bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-3xl overflow-hidden">
+                <CardContent className="p-5 md:p-8">
                   <p className="font-serif text-lg text-[#5d5a5a] leading-relaxed mb-8 italic">
                     {"\"Creo que la verdadera conexion viene de la humanidad compartida. Mi propio viaje—como artista, migrante y viajera de toda la vida—ha moldeado como entiendo el dolor, la resiliencia y la hermosa complejidad de ser humano.\""}
                   </p>

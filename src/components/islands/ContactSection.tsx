@@ -6,7 +6,13 @@ import { MessageCircle, Mail, Phone, Send, CheckCircle, Heart } from "lucide-rea
 import { useState } from "react"
 
 export default function ContactSection() {
-  const [contactMethod, setContactMethod] = useState<"form" | "whatsapp">("whatsapp")
+  const [contactMethod, setContactMethod] = useState<"form" | "whatsapp">(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get("method") === "form") return "form"
+    }
+    return "whatsapp"
+  })
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -26,12 +32,12 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="py-20 lg:py-32 bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/10 to-[#f6f3f5] relative overflow-hidden">
+    <section id="contact" className="py-14 md:py-20 lg:py-32 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-20 right-10 w-40 h-40 bg-[#98465d]/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-10 w-32 h-32 bg-[#9591eb]/10 rounded-full blur-3xl" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-5 relative z-10">
         <div className="text-center mb-12">
           <span className="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Contacto</span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
@@ -74,7 +80,7 @@ export default function ContactSection() {
         <div className="max-w-2xl mx-auto">
           {contactMethod === "form" ? (
             <Card className="bg-white border-0 shadow-xl rounded-3xl overflow-hidden">
-              <CardContent className="p-8 md:p-10">
+              <CardContent className="p-5 md:p-10">
                 {!isSubmitted ? (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
@@ -167,7 +173,7 @@ export default function ContactSection() {
             </Card>
           ) : (
             <Card className="bg-white border-0 shadow-xl rounded-3xl overflow-hidden">
-              <CardContent className="p-8 md:p-10 text-center space-y-6">
+              <CardContent className="p-5 md:p-10 text-center space-y-6">
                 <div className="w-24 h-24 bg-[#25D366]/10 rounded-full flex items-center justify-center mx-auto">
                   <MessageCircle className="w-12 h-12 text-[#25D366]" />
                 </div>

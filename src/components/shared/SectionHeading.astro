@@ -21,13 +21,13 @@ const labelClass = labelColor === 'rose' ? 'text-[#98465d]' : 'text-[#9591eb]';
 const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#9591eb]';
 ---
 
-<div class="text-center mb-16">
+<div class="text-center mb-10 md:mb-16">
   {label && (
     <span class={`inline-block font-medium mb-4 tracking-wide uppercase text-sm ${labelClass}`}>
       {label}
     </span>
   )}
-  <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+  <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
     {title}{' '}
     {highlight && <span class={highlightClass}>{highlight}</span>}
   </h2>

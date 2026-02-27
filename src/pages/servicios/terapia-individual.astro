@@ -25,186 +25,204 @@ const individualTestimonials = testimonials.filter(t => t.serviceType === 'indiv
   />
 
   <!-- Para quién -->
-  <section class="py-16 lg:py-24 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="max-w-3xl mx-auto text-center">
-        <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Para quien es</span>
-        <p class="text-lg text-[#5d5a5a]/80 leading-relaxed font-serif">
-          {individualTherapy.whoIsItFor}
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Qué puedes trabajar -->
-  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Que puedes trabajar</span>
-        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-6 text-balance">
-          Desde trastornos clinicos hasta{' '}
-          <span class="text-[#98465d]">crecimiento personal</span>
-        </h2>
-      </div>
-      <DisordersList
-        client:visible
-        disorders={individualTherapy.formalDisorders}
-        transdiagnostic={individualTherapy.transdiagnostic}
-      />
-    </div>
-  </section>
-
-  <!-- Primera sesión de valoración -->
-  <section class="py-16 lg:py-24 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="max-w-3xl mx-auto">
-        <div class="bg-gradient-to-br from-[#f6f3f5] to-white rounded-[2rem] p-8 md:p-12 shadow-lg relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-24 h-24 bg-[#cfcdff]/30 rounded-bl-full"></div>
-          <div class="relative">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-14 h-14 bg-[#98465d]/10 rounded-2xl flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display text-2xl text-[#5d5a5a]">Sesion de Valoracion</h3>
-                <span class="font-bold text-[#98465d] text-xl">&euro;{individualTherapy.evaluation.price}</span>
-              </div>
-            </div>
-            <p class="text-[#5d5a5a]/70 leading-relaxed">
-              {individualTherapy.evaluation.description}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Enfoque terapéutico -->
-  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Enfoque</span>
-        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-6 text-balance">
-          Metodologia{' '}
-          <span class="text-[#9591eb]">basada en evidencia</span>
-        </h2>
-      </div>
-      <div class="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
-        {individualTherapy.methodology.map((method) => (
-          <div class="bg-white px-5 py-3 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default hover:bg-gradient-to-br hover:from-white hover:to-[#cfcdff]/20">
-            <span class="text-[#5d5a5a] font-medium">{method}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Precios -->
-  <section class="py-16 lg:py-24 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Precios</span>
-        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
-          Invierte en{' '}
-          <span class="text-[#98465d]">tu bienestar</span>
-        </h2>
-      </div>
-      <div class="max-w-md mx-auto">
-        <div class="bg-white rounded-3xl shadow-xl p-8 space-y-4">
-          {individualTherapy.pricing.map((item) => (
-            <div class={`flex justify-between items-center ${item.savings ? 'pt-4 border-t border-[#cfcdff]' : ''}`}>
-              <span class={`${item.savings ? 'font-medium text-[#5d5a5a]' : 'text-[#5d5a5a]/70'}`}>{item.name}</span>
-              <div class="text-right">
-                <span class={`font-bold text-xl ${item.savings ? 'text-[#9591eb]' : 'text-[#98465d]'}`}>&euro;{item.price}</span>
-                {item.savings && (
-                  <span class="block text-xs text-[#5d5a5a]/50">Ahorra &euro;{item.savings}</span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Lo que puedes conseguir -->
-  <section class="py-16 lg:py-24 bg-[#f6f3f5]">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
-          Lo que puedes{' '}
-          <span class="text-[#98465d]">conseguir</span>
-        </h2>
-      </div>
-      <div class="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
-        {individualTherapy.outcomes.map((outcome) => (
-          <div class="group flex items-start gap-3 bg-white rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
-            <div class="w-6 h-6 bg-[#98465d]/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#98465d]/20 group-hover:scale-110 transition-all duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-            </div>
-            <span class="text-[#5d5a5a]">{outcome}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Proceso 1-2-3 -->
-  <section class="py-16 lg:py-24 bg-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Como funciona</span>
-        <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
-          Tres pasos para{' '}
-          <span class="text-[#9591eb]">empezar</span>
-        </h2>
-      </div>
-      <div class="max-w-4xl mx-auto">
-        <ServiceProcess client:visible steps={individualTherapy.process} />
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonios -->
-  {individualTestimonials.length > 0 && (
-    <section class="py-16 lg:py-24 bg-[#f6f3f5]">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
-            Lo que dicen{' '}
-            <span class="text-[#98465d]">mis pacientes</span>
-          </h2>
-        </div>
-        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {individualTestimonials.map((t) => (
-            <div class="bg-white rounded-3xl p-8 shadow-lg">
-              <div class="flex gap-1 mb-4">
-                {[...Array(t.rating)].map(() => (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#facc15" stroke="#facc15" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                ))}
-              </div>
-              <p class="font-serif italic text-[#5d5a5a] mb-4 leading-relaxed">"{t.text}"</p>
-              <div class="flex justify-between items-center pt-3 border-t border-[#f6f3f5]">
-                <p class="font-semibold text-[#5d5a5a] text-sm">{t.name}</p>
-                <span class="text-xs text-[#5d5a5a]/50">{t.date}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div class="text-center mt-8">
-          <a href="/testimonios" class="text-[#98465d] font-medium hover:underline">
-            Ver todos los testimonios →
-          </a>
+  <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f4eced">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Para quien es</span>
+          <p class="text-lg text-[#5d5a5a]/80 leading-relaxed font-serif">
+            {individualTherapy.whoIsItFor}
+          </p>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Qué puedes trabajar -->
+  <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #f5eff1">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="text-center mb-10 md:mb-12">
+          <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Que puedes trabajar</span>
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-6 text-balance">
+            Desde trastornos clinicos hasta{' '}
+            <span class="text-[#98465d]">crecimiento personal</span>
+          </h2>
+        </div>
+        <DisordersList
+          client:visible
+          disorders={individualTherapy.formalDisorders}
+          transdiagnostic={individualTherapy.transdiagnostic}
+        />
+      </div>
+    </section>
+  </div>
+
+  <!-- Primera sesión de valoración -->
+  <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #efedf6">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="max-w-3xl mx-auto">
+          <div class="bg-gradient-to-br from-[#f6f3f5] to-white rounded-[2rem] p-5 md:p-12 shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-[#cfcdff]/30 rounded-bl-full"></div>
+            <div class="relative">
+              <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-[#98465d]/10 rounded-2xl flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-display text-2xl text-[#5d5a5a]">Sesion de Valoracion</h3>
+                  <span class="font-bold text-[#98465d] text-xl">&euro;{individualTherapy.evaluation.price}</span>
+                </div>
+              </div>
+              <p class="text-[#5d5a5a]/70 leading-relaxed">
+                {individualTherapy.evaluation.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Enfoque terapéutico -->
+  <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f4eced">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="text-center mb-10 md:mb-12">
+          <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Enfoque</span>
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-6 text-balance">
+            Metodologia{' '}
+            <span class="text-[#9591eb]">basada en evidencia</span>
+          </h2>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
+          {individualTherapy.methodology.map((method) => (
+            <div class="bg-white px-5 py-3 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default hover:bg-gradient-to-br hover:from-white hover:to-[#cfcdff]/20">
+              <span class="text-[#5d5a5a] font-medium">{method}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Precios -->
+  <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #f0eef5">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="text-center mb-10 md:mb-12">
+          <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Precios</span>
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+            Invierte en{' '}
+            <span class="text-[#98465d]">tu bienestar</span>
+          </h2>
+        </div>
+        <div class="max-w-md mx-auto">
+          <div class="bg-white rounded-3xl shadow-xl p-5 md:p-8 space-y-4">
+            {individualTherapy.pricing.map((item) => (
+              <div class={`flex justify-between items-center ${item.savings ? 'pt-4 border-t border-[#cfcdff]' : ''}`}>
+                <span class={`${item.savings ? 'font-medium text-[#5d5a5a]' : 'text-[#5d5a5a]/70'}`}>{item.name}</span>
+                <div class="text-right">
+                  <span class={`font-bold text-xl ${item.savings ? 'text-[#9591eb]' : 'text-[#98465d]'}`}>&euro;{item.price}</span>
+                  {item.savings && (
+                    <span class="block text-xs text-[#5d5a5a]/50">Ahorra &euro;{item.savings}</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Lo que puedes conseguir -->
+  <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f5eff1">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="text-center mb-10 md:mb-12">
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+            Lo que puedes{' '}
+            <span class="text-[#98465d]">conseguir</span>
+          </h2>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+          {individualTherapy.outcomes.map((outcome) => (
+            <div class="group flex items-start gap-3 bg-white rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-default">
+              <div class="w-6 h-6 bg-[#98465d]/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#98465d]/20 group-hover:scale-110 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <span class="text-[#5d5a5a]">{outcome}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Proceso 1-2-3 -->
+  <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #efedf6">
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="text-center mb-10 md:mb-12">
+          <span class="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Como funciona</span>
+          <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+            Tres pasos para{' '}
+            <span class="text-[#9591eb]">empezar</span>
+          </h2>
+        </div>
+        <div class="max-w-4xl mx-auto">
+          <ServiceProcess client:visible steps={individualTherapy.process} />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Testimonios -->
+  {individualTestimonials.length > 0 && (
+    <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff2">
+      <section class="py-16 lg:py-24">
+        <div class="container mx-auto px-5">
+          <div class="text-center mb-10 md:mb-12">
+            <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] text-balance">
+              Lo que dicen{' '}
+              <span class="text-[#98465d]">mis pacientes</span>
+            </h2>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {individualTestimonials.map((t) => (
+              <div class="bg-white rounded-3xl p-5 md:p-8 shadow-lg">
+                <div class="flex gap-1 mb-4">
+                  {[...Array(t.rating)].map(() => (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#facc15" stroke="#facc15" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  ))}
+                </div>
+                <p class="font-serif italic text-[#5d5a5a] mb-4 leading-relaxed">"{t.text}"</p>
+                <div class="flex justify-between items-center pt-3 border-t border-[#f6f3f5]">
+                  <p class="font-semibold text-[#5d5a5a] text-sm">{t.name}</p>
+                  <span class="text-xs text-[#5d5a5a]/50">{t.date}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="text-center mt-8">
+            <a href="/testimonios" class="text-[#98465d] font-medium hover:underline">
+              Ver todos los testimonios →
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   )}
 
-  <CTABanner
-    title="Quiero empezar ya!"
-    highlight=""
-    description="Da el primer paso hacia tu bienestar. La sesion de valoracion es una conversacion sin compromiso."
-    primaryCta={{ label: "Reservar sesion", href: "/contacto" }}
-    secondaryCta={{ label: "Tengo preguntas", href: "/faq" }}
-  />
+  <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
+    <CTABanner
+      title="Quiero empezar ya!"
+      highlight=""
+      description="Da el primer paso hacia tu bienestar. La sesion de valoracion es una conversacion sin compromiso."
+      primaryCta={{ label: "Reservar sesion", href: "/contacto" }}
+      secondaryCta={{ label: "Tengo preguntas", href: "/faq" }}
+    />
+  </div>
 </PageLayout>

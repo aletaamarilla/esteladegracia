@@ -65,14 +65,14 @@ export default function ProblemsAnimated() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="py-20 lg:py-32 bg-gradient-to-b from-[#f6f3f5] via-white to-[#f6f3f5] relative overflow-hidden">
+    <section ref={sectionRef} className="py-14 md:py-20 lg:py-32 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-20 -left-20 w-80 h-80 bg-[#98465d]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 -right-20 w-96 h-96 bg-[#9591eb]/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-5 relative z-10">
         {/* "Si te pasa esto" section */}
         <div className="text-center mb-12">
           <span className="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Reconoces algo de esto?</span>
@@ -83,12 +83,12 @@ export default function ProblemsAnimated() {
         </div>
 
         {/* Scattered problem tags */}
-        <div className="relative max-w-4xl mx-auto mb-24">
+        <div className="relative max-w-4xl mx-auto mb-16 md:mb-24">
           <div className="flex flex-wrap justify-center gap-3 md:gap-4">
             {problems.map((problem, index) => (
               <div
                 key={index}
-                className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                className={`transition-all duration-700 ${index >= 6 ? 'hidden md:block' : ''} ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                 style={{
                   transitionDelay: `${problem.delay}s`,
                   transform: isVisible ? `rotate(${problem.rotation}deg)` : 'rotate(0deg) translateY(20px)',
@@ -134,7 +134,7 @@ export default function ProblemsAnimated() {
               className={`bg-white border-0 shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
               style={{ transitionDelay: `${0.4 + index * 0.1}s` }}
             >
-              <CardContent className="p-6 md:p-8">
+              <CardContent className="p-5 md:p-8">
                 <div className="flex gap-5">
                   <div className="w-14 h-14 bg-gradient-to-br from-[#98465d]/10 to-[#9591eb]/10 rounded-2xl flex items-center justify-center flex-shrink-0">
                     <item.icon className="w-7 h-7 text-[#98465d]" />
@@ -151,13 +151,15 @@ export default function ProblemsAnimated() {
 
         {/* CTA */}
         <div className="text-center">
-          <Button
-            size="lg"
-            className="bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-8 py-6 text-lg font-medium transition-all hover:scale-105 hover:shadow-lg group"
-          >
-            Quiero empezar
-            <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <a href="/contacto">
+            <Button
+              size="lg"
+              className="bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-8 py-6 text-lg font-medium transition-all hover:scale-105 hover:shadow-lg group"
+            >
+              Quiero empezar
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </a>
         </div>
       </div>
     </section>

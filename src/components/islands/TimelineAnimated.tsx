@@ -35,10 +35,10 @@ export default function TimelineAnimated({ items }: TimelineAnimatedProps) {
   }, [items])
 
   return (
-    <section className="py-20 lg:py-28 bg-white relative overflow-hidden">
+    <section className="py-14 md:py-20 lg:py-28 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-[#cfcdff]/20 rounded-full blur-3xl" />
 
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto px-5 relative">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-1 bg-[#9591eb] rounded-full" />
           <span className="text-[#9591eb] font-medium tracking-wide uppercase text-sm">

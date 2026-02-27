@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+import { X, Mail, MessageCircle } from "lucide-react"
 
 const DISMISSED_KEY = "stickyMobileCTA_dismissed"
 
-interface StickyMobileCTAProps {
-  label?: string
-  href?: string
-}
-
-export default function StickyMobileCTA({
-  label = "Reservar cita",
-  href = "/contacto",
-}: StickyMobileCTAProps) {
+export default function StickyMobileCTA() {
   const [visible, setVisible] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
@@ -44,18 +35,30 @@ export default function StickyMobileCTA({
         visible ? "translate-y-0" : "translate-y-full"
       }`}
     >
-      <div className="flex items-center gap-3">
-        <a href={href} className="flex-1">
-          <Button className="hover-shimmer w-full bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full py-5 text-base font-medium">
-            {label}
-          </Button>
+      <div className="flex items-center gap-2">
+        <a href="/contacto?method=form" className="flex-1">
+          <button className="hover-shimmer w-full flex items-center justify-center gap-2 bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full py-3 text-sm font-medium">
+            <Mail className="w-4 h-4" />
+            Reservar cita
+          </button>
+        </a>
+        <a
+          href="https://wa.me/34600000000?text=Hola!%20Me%20gustaria%20agendar%20una%20cita."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1"
+        >
+          <button className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#25D366]/90 text-white rounded-full py-3 text-sm font-medium">
+            <MessageCircle className="w-4 h-4" />
+            WhatsApp
+          </button>
         </a>
         <button
           onClick={handleDismiss}
-          className="w-10 h-10 flex items-center justify-center text-[#5d5a5a]/40 hover:text-[#5d5a5a] rounded-full hover:bg-[#f6f3f5] transition-colors flex-shrink-0"
+          className="w-9 h-9 flex items-center justify-center text-[#5d5a5a]/40 hover:text-[#5d5a5a] rounded-full hover:bg-[#f6f3f5] transition-colors flex-shrink-0"
           aria-label="Cerrar"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
       </div>
     </div>

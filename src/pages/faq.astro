@@ -22,14 +22,18 @@ import { faqData } from '../data/faq';
     ]}
   />
 
-  <FAQSection client:visible />
+  <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f5eff2">
+    <FAQSection client:visible />
+  </div>
 
-  <CTABanner
-    title="No encuentras tu pregunta?"
-    highlight="Contactame."
-    description="Estoy disponible para resolver cualquier duda que tengas. Escribeme sin compromiso."
-    primaryCta={{ label: "Contactar", href: "/contacto" }}
-  />
+  <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
+    <CTABanner
+      title="No encuentras tu pregunta?"
+      highlight="Contactame."
+      description="Estoy disponible para resolver cualquier duda que tengas. Escribeme sin compromiso."
+      primaryCta={{ label: "Contactar", href: "/contacto" }}
+    />
+  </div>
 
   <!-- FAQ Structured Data for SEO -->
   <script type="application/ld+json" set:html={JSON.stringify({

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   Accordion,
   AccordionContent,
@@ -50,23 +51,86 @@ const faqData = {
   ],
 }
 
-export default function FAQSection() {
+const tabs = [
+  { key: "individual" as const, label: "Individual", color: "#98465d", bgColor: "#98465d" },
+  { key: "group" as const, label: "Grupal", color: "#9591eb", bgColor: "#9591eb" },
+  { key: "anxiety" as const, label: "Ansiedad", color: "#5d5a5a", bgColor: "#cfcdff" },
+]
+
+function FAQAccordion({ items, accentColor, prefix }: { items: typeof faqData.individual, accentColor: string, prefix: string }) {
   return (
-    <section className="py-20 lg:py-32 bg-[#f6f3f5]">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <Accordion type="single" collapsible className="space-y-3">
+      {items.map((item, index) => (
+        <AccordionItem
+          key={index}
+          value={`${prefix}-${index}`}
+          className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden"
+        >
+          <AccordionTrigger
+            className="px-5 py-4 md:px-6 text-left text-sm md:text-base text-[#5d5a5a] hover:no-underline"
+            style={{ ["--accent" as string]: accentColor }}
+          >
+            {item.question}
+          </AccordionTrigger>
+          <AccordionContent className="px-5 pb-4 md:px-6 text-[#5d5a5a]/70 leading-relaxed text-sm md:text-base">
+            {item.answer}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  )
+}
+
+export default function FAQSection() {
+  const [activeTab, setActiveTab] = useState<"individual" | "group" | "anxiety">("individual")
+
+  return (
+    <section className="py-14 md:py-20 lg:py-32">
+      <div className="container mx-auto px-5">
+        <div className="text-center mb-10 md:mb-16">
           <span className="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Preguntas Frecuentes</span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
             Preguntas que podrias{" "}
             <span className="text-[#9591eb]">tener</span>
           </h2>
-          <p className="text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
             No encuentras lo que buscas? No dudes en contactarme—siempre estoy feliz de conversar.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Individual Therapy */}
+        {/* Mobile: tabbed navigation */}
+        <div className="lg:hidden max-w-xl mx-auto">
+          <div className="flex rounded-2xl bg-[#f6f3f5] p-1 mb-6">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  activeTab === tab.key
+                    ? "bg-white text-[#5d5a5a] shadow-sm"
+                    : "text-[#5d5a5a]/50"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            {activeTab === "individual" && (
+              <FAQAccordion items={faqData.individual} accentColor="#98465d" prefix="m-individual" />
+            )}
+            {activeTab === "group" && (
+              <FAQAccordion items={faqData.group} accentColor="#9591eb" prefix="m-group" />
+            )}
+            {activeTab === "anxiety" && (
+              <FAQAccordion items={faqData.anxiety} accentColor="#5d5a5a" prefix="m-anxiety" />
+            )}
+          </div>
+        </div>
+
+        {/* Desktop: 3-column grid */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="space-y-4">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-[#98465d]/10 rounded-xl flex items-center justify-center">
@@ -74,25 +138,9 @@ export default function FAQSection() {
               </div>
               <h3 className="text-lg font-semibold text-[#5d5a5a]">Terapia Individual</h3>
             </div>
-            <Accordion type="single" collapsible className="space-y-3">
-              {faqData.individual.map((item, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`individual-${index}`}
-                  className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden"
-                >
-                  <AccordionTrigger className="px-6 py-4 text-left text-[#5d5a5a] hover:text-[#98465d] hover:no-underline [&[data-state=open]]:text-[#98465d]">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4 text-[#5d5a5a]/70 leading-relaxed">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            <FAQAccordion items={faqData.individual} accentColor="#98465d" prefix="individual" />
           </div>
 
-          {/* Group Sessions */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-[#9591eb]/10 rounded-xl flex items-center justify-center">
@@ -100,25 +148,9 @@ export default function FAQSection() {
               </div>
               <h3 className="text-lg font-semibold text-[#5d5a5a]">Sesiones Grupales</h3>
             </div>
-            <Accordion type="single" collapsible className="space-y-3">
-              {faqData.group.map((item, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`group-${index}`}
-                  className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden"
-                >
-                  <AccordionTrigger className="px-6 py-4 text-left text-[#5d5a5a] hover:text-[#9591eb] hover:no-underline [&[data-state=open]]:text-[#9591eb]">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4 text-[#5d5a5a]/70 leading-relaxed">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            <FAQAccordion items={faqData.group} accentColor="#9591eb" prefix="group" />
           </div>
 
-          {/* Anxiety Specific */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-[#cfcdff]/50 rounded-xl flex items-center justify-center">
@@ -126,22 +158,7 @@ export default function FAQSection() {
               </div>
               <h3 className="text-lg font-semibold text-[#5d5a5a]">Preguntas sobre Ansiedad</h3>
             </div>
-            <Accordion type="single" collapsible className="space-y-3">
-              {faqData.anxiety.map((item, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`anxiety-${index}`}
-                  className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden"
-                >
-                  <AccordionTrigger className="px-6 py-4 text-left text-[#5d5a5a] hover:text-[#5d5a5a]/80 hover:no-underline [&[data-state=open]]:text-[#98465d]">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4 text-[#5d5a5a]/70 leading-relaxed">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            <FAQAccordion items={faqData.anxiety} accentColor="#5d5a5a" prefix="anxiety" />
           </div>
         </div>
       </div>
