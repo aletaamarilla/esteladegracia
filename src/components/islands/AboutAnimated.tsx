@@ -10,13 +10,13 @@ function FloatingHearts({ isVisible }: { isVisible: boolean }) {
   useEffect(() => {
     if (isVisible) {
       setHearts(
-        Array.from({ length: 10 }, (_, i) => ({
+        Array.from({ length: 15 }, (_, i) => ({
           id: i,
-          left: 5 + Math.random() * 90,
-          delay: Math.random() * 6,
-          size: 14 + Math.random() * 10,
-          duration: 10 + Math.random() * 8,
-          opacity: 0.08 + Math.random() * 0.1,
+          left: Math.random() * 100,
+          delay: Math.random() * 5,
+          size: 18 + Math.random() * 24,
+          duration: 6 + Math.random() * 5,
+          opacity: 0.2 + Math.random() * 0.25,
         }))
       )
     } else {
@@ -32,22 +32,22 @@ function FloatingHearts({ isVisible }: { isVisible: boolean }) {
           className="absolute animate-float-up"
           style={{
             left: `${heart.left}%`,
-            bottom: "-30px",
+            bottom: "-50px",
             animationDelay: `${heart.delay}s`,
             animationDuration: `${heart.duration}s`,
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={heart.size}
-            height={heart.size}
-            viewBox="0 0 24 24"
-            fill={`rgba(152, 70, 93, ${heart.opacity})`}
-            stroke="none"
+          <span
+            className="drop-shadow-sm select-none"
+            style={{
+              fontSize: heart.size,
+              opacity: heart.opacity,
+              lineHeight: 1,
+            }}
             aria-hidden="true"
           >
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
+            💖
+          </span>
         </div>
       ))}
     </div>
