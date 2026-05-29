@@ -20,6 +20,7 @@ pnpm-debug.log*
 # sanity studio
 studio/node_modules/
 studio/dist/
+studio/.sanity/
 studio/.env
 
 # macOS-specific files
