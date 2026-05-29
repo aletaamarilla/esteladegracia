@@ -1,10 +1,5 @@
-import { useState } from "react"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { useState, useRef, useEffect, useCallback } from "react"
+import { ChevronDown } from "lucide-react"
 
 interface DisorderCategory {
   category: string
@@ -16,12 +11,70 @@ interface Props {
   transdiagnostic: string[]
 }
 
+function DisorderAccordionItem({
+  category,
+  isOpen,
+  onToggle,
+}: {
+  category: DisorderCategory
+  isOpen: boolean
+  onToggle: () => void
+}) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(contentRef.current.scrollHeight)
+    }
+  }, [category.items])
+
+  return (
+    <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`w-full flex items-center justify-between gap-4 px-6 py-4 text-left font-semibold transition-colors cursor-pointer ${
+          isOpen ? "text-[#98465d]" : "text-[#5d5a5a] hover:text-[#98465d]"
+        }`}
+        aria-expanded={isOpen}
+      >
+        {category.category}
+        <ChevronDown
+          className={`text-[#5d5a5a]/40 size-4 shrink-0 transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      <div
+        ref={contentRef}
+        className="overflow-hidden transition-[max-height] duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? `${height}px` : "0px" }}
+        role="region"
+      >
+        <ul className="px-6 pb-4 space-y-2">
+          {category.items.map((item, i) => (
+            <li key={i} className="flex items-center gap-3 text-[#5d5a5a]/70">
+              <div className="w-1.5 h-1.5 bg-[#98465d] rounded-full flex-shrink-0" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 export default function DisordersList({ disorders, transdiagnostic }: Props) {
   const [activeTab, setActiveTab] = useState<"disorders" | "transdiagnostic">("disorders")
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  const handleToggle = useCallback((index: number) => {
+    setOpenIndex(prev => (prev === index ? null : index))
+  }, [])
 
   return (
     <div>
-      {/* Tab Buttons */}
       <div className="flex justify-center mb-10">
         <div className="inline-flex bg-white rounded-full p-1.5 shadow-lg">
           <button
@@ -47,36 +100,19 @@ export default function DisordersList({ disorders, transdiagnostic }: Props) {
         </div>
       </div>
 
-      {/* Disorders Accordion */}
       {activeTab === "disorders" && (
-        <div className="max-w-2xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-3">
-            {disorders.map((category, index) => (
-              <AccordionItem
-                key={index}
-                value={`disorder-${index}`}
-                className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden"
-              >
-                <AccordionTrigger className="px-6 py-4 text-left text-[#5d5a5a] hover:text-[#98465d] hover:no-underline [&[data-state=open]]:text-[#98465d] font-semibold">
-                  {category.category}
-                </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4">
-                  <ul className="space-y-2">
-                    {category.items.map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-[#5d5a5a]/70">
-                        <div className="w-1.5 h-1.5 bg-[#98465d] rounded-full flex-shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        <div className="max-w-2xl mx-auto space-y-3">
+          {disorders.map((category, index) => (
+            <DisorderAccordionItem
+              key={index}
+              category={category}
+              isOpen={openIndex === index}
+              onToggle={() => handleToggle(index)}
+            />
+          ))}
         </div>
       )}
 
-      {/* Transdiagnostic Grid */}
       {activeTab === "transdiagnostic" && (
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
           {transdiagnostic.map((item, index) => (

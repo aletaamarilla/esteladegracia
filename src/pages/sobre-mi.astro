@@ -1,29 +1,67 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import CTABanner from '../sections/CTABanner.astro';
-import TrustBar from '../sections/TrustBar.astro';
-import TestimonialHighlight from '../sections/TestimonialHighlight.astro';
-import AboutHero from '../components/islands/AboutHero';
-import TimelineAnimated from '../components/islands/TimelineAnimated';
-import { aboutHeroData, personalStory, storyPullQuotes, approachCards, personalTraits, timeline, philosophy } from '../data/about';
+import PageLayout from '@/layouts/PageLayout.astro'
+import CTABanner from '@/sections/CTABanner.astro'
+import TransitionImageBanner from '@/sections/TransitionImageBanner.astro'
+import TrustBar from '@/sections/TrustBar.astro'
+import TestimonialHighlight from '@/sections/TestimonialHighlight.astro'
+import AboutHero from '@/components/islands/AboutHero'
+import TimelineAnimated from '@/components/islands/TimelineAnimated'
+import { sanityFetch } from '@/lib/sanity'
+import { aboutPageQuery, siteSettingsQuery } from '@/lib/queries'
+import type { AboutPage, SiteSettings } from '@/lib/sanityTypes'
+import { portableTextToHtml } from '@/lib/portableText'
+import { resolveIconSvg } from '@/lib/icons'
+import { croppedImage, croppedSrcSet, fullBleedHero, hotspotToObjectPosition, portraitImage, portraitSrcSet, srcSet, videoPosterImage } from '@/lib/sanityImage'
+
+const [page, settings] = await Promise.all([
+  sanityFetch<AboutPage>(aboutPageQuery),
+  sanityFetch<SiteSettings>(siteSettingsQuery),
+])
+
+const whatsappUrl = settings?.contactInfo?.whatsappNumber
+  ? `https://wa.me/${settings.contactInfo.whatsappNumber}?text=${encodeURIComponent(settings.contactInfo.whatsappDefaultMessage ?? 'Hola! Me gustaria agendar una cita.')}`
+  : 'https://wa.me/34600000000'
+
+const story = page?.personalStory
+const approach = page?.approach
+const ctaRaw = page?.ctaBanner ?? {}
+const cta = {
+  title: ctaRaw.title,
+  highlight: ctaRaw.highlight,
+  description: ctaRaw.description,
+  primaryCta: ctaRaw.primaryCta,
+  secondaryCta: ctaRaw.secondaryCta,
+  backgroundImage: ctaRaw.backgroundImage,
+}
+
+const storyHtml = story?.storyBody ? portableTextToHtml(story.storyBody) : ''
+const storyImageAspectRatio = 3 / 4
+const storyImageWidths = [640, 960, 1280, 1600]
+
+const personalTraits = story?.personalTraits ?? []
+const approachCards = approach?.cards ?? []
+const pullQuotes = story?.pullQuotes ?? []
+const timelineItems = page?.timeline ?? []
+
 ---
 
 <PageLayout
   title="Sobre Mi"
   description="Conoce a la profesional y persona detras de la terapia. Mas de 12 anos de experiencia, artista, migrante y viajera."
 >
-  {/* --- SECTION 1: Hero with photo/video placeholder --- */}
   <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f4eced">
     <AboutHero
       client:visible
-      headline={aboutHeroData.headline}
-      subheadline={aboutHeroData.subheadline}
-      badge={aboutHeroData.badge}
-      videoPlaceholderText={aboutHeroData.videoPlaceholderText}
+      headline={page?.hero?.headline}
+      subheadline={page?.hero?.subheadline}
+      videoPlaceholderText={page?.hero?.videoPlaceholderText}
+      heroImageUrl={page?.hero?.heroImage ? croppedImage(page.hero.heroImage, 1600, storyImageAspectRatio, 95) : undefined}
+      heroImageSrcSet={page?.hero?.heroImage ? croppedSrcSet(page.hero.heroImage, storyImageWidths, storyImageAspectRatio, 95) : undefined}
+      videoUrl={page?.hero?.videoUrl}
+      videoPosterUrl={page?.hero?.videoPoster ? videoPosterImage(page.hero.videoPoster) : undefined}
     />
   </div>
 
-  {/* --- SECTION 2: Personal Story (EMPATHY - the most powerful content) --- */}
   <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #efedf6">
     <section class="py-14 md:py-20 lg:py-28 relative overflow-hidden">
       <div class="absolute bottom-0 left-0 w-80 h-80 bg-[#98465d]/5 rounded-full blur-3xl"></div>
@@ -31,153 +69,188 @@ import { aboutHeroData, personalStory, storyPullQuotes, approachCards, personalT
       <div class="container mx-auto px-5 relative">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-12 h-1 bg-[#98465d] rounded-full"></div>
-          <span class="text-[#98465d] font-medium tracking-wide uppercase text-sm">Mi historia</span>
+          <span class="text-[#98465d] font-medium tracking-wide uppercase text-sm">
+            {story?.sectionLabel}
+          </span>
         </div>
 
         <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-12 text-balance">
-          Te entiendo porque{' '}
-          <span class="text-[#98465d]">lo he vivido</span>
+          {story?.title}{' '}
+          <span class="text-[#98465d]">{story?.titleHighlight}</span>
         </h2>
 
-        <div class="max-w-4xl mx-auto">
-          {/* Pull quote */}
-          <blockquote class="border-l-4 border-[#98465d] pl-6 mb-12">
-            <p class="font-display text-2xl md:text-3xl text-[#98465d]/80 italic leading-relaxed">
-              {storyPullQuotes[0]}
-            </p>
-          </blockquote>
+        {story?.storyImage && (
+          <div class="lg:hidden mb-8">
+            <img
+              src={croppedImage(story.storyImage, 1600, storyImageAspectRatio, 95)}
+              srcset={croppedSrcSet(story.storyImage, storyImageWidths, storyImageAspectRatio, 95)}
+              sizes="100vw"
+              alt="Estela de Gracia"
+              class="rounded-3xl shadow-xl w-full aspect-[3/4] object-cover"
+              style={`object-position: ${hotspotToObjectPosition(story.storyImage)}`}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        )}
 
-          {/* Personal story card */}
-          <div class="relative mb-12">
-            <div class="absolute inset-0 bg-gradient-to-br from-[#98465d]/5 to-[#9591eb]/5 rounded-[3rem] -rotate-1"></div>
-            <div class="relative bg-white/90 rounded-3xl p-5 md:p-12 shadow-xl">
-              {personalStory.split('\n\n').map((paragraph) => (
-                <p class="font-serif text-lg text-[#5d5a5a] leading-relaxed mb-6 last:mb-0">
-                  {paragraph}
+        <div class={`grid ${story?.storyImage ? 'lg:grid-cols-[3fr_2fr]' : ''} gap-10`}>
+          <div>
+            {pullQuotes[0] && (
+              <blockquote class="border-l-4 border-[#98465d] pl-6 mb-12">
+                <p class="font-display text-2xl md:text-3xl text-[#98465d]/80 italic leading-relaxed">
+                  {pullQuotes[0]}
                 </p>
-              ))}
-            </div>
+              </blockquote>
+            )}
+
+            {storyHtml ? (
+              <div class="relative mb-12">
+                <div
+                  class="relative bg-white/90 rounded-3xl p-5 md:p-12 shadow-xl portable-text font-serif text-lg text-[#5d5a5a] leading-relaxed [&>p]:mb-6 [&>p:last-child]:mb-0"
+                  set:html={storyHtml}
+                />
+              </div>
+            ) : null}
+
+            {pullQuotes[1] && (
+              <blockquote class="border-l-4 border-[#9591eb] pl-6 mb-16">
+                <p class="font-display text-xl md:text-2xl text-[#9591eb]/80 italic leading-relaxed">
+                  {pullQuotes[1]}
+                </p>
+              </blockquote>
+            )}
           </div>
 
-          {/* Second pull quote */}
-          <blockquote class="border-l-4 border-[#9591eb] pl-6 mb-16">
-            <p class="font-display text-xl md:text-2xl text-[#9591eb]/80 italic leading-relaxed">
-              {storyPullQuotes[1]}
-            </p>
-          </blockquote>
+          {story?.storyImage && (
+            <div class="hidden lg:block sticky top-28 self-start">
+              <img
+                src={croppedImage(story.storyImage, 1600, storyImageAspectRatio, 95)}
+                srcset={croppedSrcSet(story.storyImage, storyImageWidths, storyImageAspectRatio, 95)}
+                sizes="40vw"
+                alt="Estela de Gracia"
+                class="rounded-3xl shadow-xl w-full aspect-[3/4] object-cover"
+                style={`object-position: ${hotspotToObjectPosition(story.storyImage)}`}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          )}
+        </div>
 
-          {/* Traits grid */}
-          <div class="grid md:grid-cols-3 gap-6 mb-12">
-            {personalTraits.map((trait) => (
+        <div class="grid md:grid-cols-3 gap-6 mb-12 mt-12">
+          {personalTraits.map((trait) => {
+            const svgPath = resolveIconSvg(trait.icon)
+            return (
               <div class="group hover-relief bg-[#f6f3f5] rounded-3xl p-5 md:p-8 shadow-lg">
                 <div class="w-14 h-14 bg-[#98465d]/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  {trait.icon === "Palette" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="#98465d"/><circle cx="17.5" cy="10.5" r=".5" fill="#98465d"/><circle cx="8.5" cy="7.5" r=".5" fill="#98465d"/><circle cx="6.5" cy="12.5" r=".5" fill="#98465d"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
-                  )}
-                  {trait.icon === "Plane" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
-                  )}
-                  {trait.icon === "Globe" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                  )}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={svgPath} />
                 </div>
                 <h3 class="font-semibold text-[#5d5a5a] text-lg mb-2">{trait.label}</h3>
                 <p class="text-[#5d5a5a]/70">{trait.description}</p>
               </div>
-            ))}
-          </div>
+            )
+          })}
+        </div>
 
-          {/* Inline CTA */}
-          <div class="text-center">
-            <p class="font-serif text-lg text-[#5d5a5a]/80 mb-4 italic">
-              Si algo de esto resuena contigo...
-            </p>
-            <a href="/contacto">
-              <button class="hover-shimmer inline-flex items-center justify-center bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-8 py-4 text-lg font-medium transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#98465d]/25">
-                Hablemos
-              </button>
-            </a>
-          </div>
+        <div class="text-center">
+          <p class="font-serif text-lg text-[#5d5a5a]/80 mb-4 italic">
+            {story?.inlineCta?.text}
+          </p>
+          <a href={story?.inlineCta?.buttonHref ?? '/contacto'}>
+            <button class="hover-shimmer inline-flex items-center justify-center bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-8 py-4 text-lg font-medium transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#98465d]/25">
+              {story?.inlineCta?.buttonLabel}
+            </button>
+          </a>
         </div>
       </div>
     </section>
   </div>
 
-  {/* --- SECTION 3: Trust Bar --- */}
+  {page?.transitionBanner?.image && (
+    <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #efedf6">
+      <TransitionImageBanner
+        imageUrl={fullBleedHero(page.transitionBanner.image)}
+        imageSrcSet={srcSet(page.transitionBanner.image)}
+        imagePosition={hotspotToObjectPosition(page.transitionBanner.image)}
+        title={page.transitionBanner.title}
+        subtitle={page.transitionBanner.subtitle}
+      />
+    </div>
+  )}
+
   <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff1">
-    <TrustBar />
+    <TrustBar stats={page?.trustBar} />
   </div>
 
-  {/* --- SECTION 4: Mi Enfoque (visual cards) --- */}
   <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #f0eef5">
     <section class="py-14 md:py-20 lg:py-28 relative overflow-hidden">
       <div class="absolute top-0 right-0 w-64 h-64 bg-[#cfcdff]/20 rounded-full blur-3xl"></div>
 
       <div class="container mx-auto px-5 relative">
         <div class="text-center mb-10 md:mb-14">
-          <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">Mi enfoque</span>
+          <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">
+            {approach?.sectionLabel}
+          </span>
           <h2 class="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-6 text-balance">
-            Como trabajo y{' '}
-            <span class="text-[#98465d]">por que es diferente</span>
+            {approach?.title}{' '}
+            <span class="text-[#98465d]">{approach?.titleHighlight}</span>
           </h2>
           <p class="text-lg text-[#5d5a5a]/80 max-w-2xl mx-auto font-serif leading-relaxed">
-            {philosophy.split('\n\n')[0]}
+            {approach?.philosophy}
           </p>
         </div>
 
         <div class="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {approachCards.map((card) => (
-            <div class="hover-relief bg-[#f6f3f5] rounded-3xl p-5 md:p-8 shadow-lg">
-              <div class="flex gap-5">
-                <div class="w-14 h-14 bg-gradient-to-br from-[#98465d]/10 to-[#9591eb]/10 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  {card.icon === "Ear" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 0 4 0"/></svg>
-                  )}
-                  {card.icon === "Heart" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                  )}
-                  {card.icon === "Shield" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-                  )}
-                  {card.icon === "Sparkles" && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
-                  )}
-                </div>
-                <div>
-                  <h3 class="font-display text-xl text-[#5d5a5a] mb-2">{card.title}</h3>
-                  <p class="text-[#5d5a5a]/70 leading-relaxed">{card.description}</p>
+          {approachCards.map((card) => {
+            const svgPath = resolveIconSvg(card.icon)
+            return (
+              <div class="hover-relief bg-[#f6f3f5] rounded-3xl p-5 md:p-8 shadow-lg">
+                <div class="flex gap-5">
+                  <div class="w-14 h-14 bg-gradient-to-br from-[#98465d]/10 to-[#9591eb]/10 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98465d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={svgPath} />
+                  </div>
+                  <div>
+                    <h3 class="font-display text-xl text-[#5d5a5a] mb-2">{card.title}</h3>
+                    <p class="text-[#5d5a5a]/70 leading-relaxed">{card.description}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
   </div>
 
-  {/* --- SECTION 5: Testimonials --- */}
   <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f4eced">
-    <TestimonialHighlight
-      count={2}
-      title="Lo que dicen mis pacientes"
-      linkText="Ver todos los testimonios"
-      linkHref="/testimonios"
-    />
+    <TestimonialHighlight testimonials={page?.testimonials?.slice(0, 2)} />
   </div>
 
-  {/* --- SECTION 6: Animated Timeline --- */}
   <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #f5eff2">
-    <TimelineAnimated client:visible items={timeline} />
+    <TimelineAnimated client:visible items={timelineItems} />
   </div>
 
-  {/* --- SECTION 7: Final CTA --- */}
+  {page?.timelineImage && (
+    <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
+      <TransitionImageBanner
+        imageUrl={fullBleedHero(page.timelineImage)}
+        imageSrcSet={srcSet(page.timelineImage)}
+        imagePosition={hotspotToObjectPosition(page.timelineImage)}
+      />
+    </div>
+  )}
+
   <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
     <CTABanner
-      title="El primer paso no tiene que ser perfecto."
-      highlight="Solo tiene que ser tuyo."
-      description="La sesion de valoracion es una conversacion abierta para conocernos. Sin compromiso, sin presion."
-      primaryCta={{ label: "Reservar mi primera sesion", href: "/contacto" }}
-      secondaryCta={{ label: "Escribeme por WhatsApp", href: "https://wa.me/34600000000" }}
+      title={cta.title}
+      highlight={cta.highlight}
+      description={cta.description}
+      primaryCta={cta.primaryCta}
+      secondaryCta={cta.secondaryCta}
+        backgroundImageUrl={cta.backgroundImage ? portraitImage(cta.backgroundImage) : undefined}
+        backgroundImageSrcSet={cta.backgroundImage ? portraitSrcSet(cta.backgroundImage) : undefined}
+      backgroundImagePosition={hotspotToObjectPosition(cta.backgroundImage)}
     />
   </div>
 </PageLayout>

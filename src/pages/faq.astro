@@ -1,9 +1,35 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import PageHero from '../sections/PageHero.astro';
-import CTABanner from '../sections/CTABanner.astro';
-import FAQSection from '../components/islands/FAQSection';
-import { faqData } from '../data/faq';
+import PageLayout from '@/layouts/PageLayout.astro'
+import PageHero from '@/sections/PageHero.astro'
+import CTABanner from '@/sections/CTABanner.astro'
+import FAQSection from '@/components/islands/FAQSection'
+import { sanityFetch } from '@/lib/sanity'
+import { faqPageQuery, allFaqItemsQuery, siteSettingsQuery } from '@/lib/queries'
+import type { FaqPage, FaqItem, SiteSettings } from '@/lib/sanityTypes'
+import { hotspotToObjectPosition, portraitImage, portraitSrcSet } from '@/lib/sanityImage'
+
+const [page, faqItems, settings] = await Promise.all([
+  sanityFetch<FaqPage>(faqPageQuery),
+  sanityFetch<FaqItem[]>(allFaqItemsQuery),
+  sanityFetch<SiteSettings>(siteSettingsQuery),
+])
+
+const whatsappUrl = settings?.contactInfo?.whatsappNumber
+  ? `https://wa.me/${settings.contactInfo.whatsappNumber}?text=${encodeURIComponent(settings.contactInfo.whatsappDefaultMessage ?? 'Hola! Me gustaria agendar una cita.')}`
+  : 'https://wa.me/34600000000'
+
+const ctaRaw = page?.ctaBanner ?? {}
+const cta = {
+  title: ctaRaw.title,
+  highlight: ctaRaw.highlight,
+  description: ctaRaw.description,
+  primaryCta: ctaRaw.primaryCta,
+  secondaryCta: ctaRaw.secondaryCta,
+  backgroundImage: ctaRaw.backgroundImage,
+}
+
+const allItems = faqItems ?? []
+
 ---
 
 <PageLayout
@@ -11,39 +37,42 @@ import { faqData } from '../data/faq';
   description="Resuelve tus dudas sobre terapia individual, grupal y tratamiento de ansiedad."
 >
   <PageHero
-    label="FAQ"
-    title="Preguntas que podrias"
-    highlight="tener"
+    label={page?.heroLabel}
+    title={page?.heroTitle}
+    highlight={page?.heroHighlight}
     highlightColor="purple"
-    description="No encuentras lo que buscas? No dudes en contactarme—siempre estoy feliz de conversar."
+    description={page?.heroDescription}
     breadcrumbs={[
-      { label: "Inicio", href: "/" },
-      { label: "Preguntas Frecuentes" },
+      { label: 'Inicio', href: '/' },
+      { label: 'Preguntas Frecuentes' },
     ]}
   />
 
   <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f5eff2">
-    <FAQSection client:visible />
+    <FAQSection
+      client:visible
+      faqItems={allItems}
+      showAll
+    />
   </div>
 
   <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
     <CTABanner
-      title="No encuentras tu pregunta?"
-      highlight="Contactame."
-      description="Estoy disponible para resolver cualquier duda que tengas. Escribeme sin compromiso."
-      primaryCta={{ label: "Contactar", href: "/contacto" }}
+      title={cta.title}
+      highlight={cta.highlight}
+      description={cta.description}
+      primaryCta={cta.primaryCta}
+      secondaryCta={cta.secondaryCta}
+      backgroundImageUrl={cta.backgroundImage ? portraitImage(cta.backgroundImage) : undefined}
+      backgroundImageSrcSet={cta.backgroundImage ? portraitSrcSet(cta.backgroundImage) : undefined}
+      backgroundImagePosition={hotspotToObjectPosition(cta.backgroundImage)}
     />
   </div>
 
-  <!-- FAQ Structured Data for SEO -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      ...faqData.individual,
-      ...faqData.group,
-      ...faqData.anxiety,
-    ].map(item => ({
+    "mainEntity": allItems.map(item => ({
       "@type": "Question",
       "name": item.question,
       "acceptedAnswer": {

@@ -1,16 +1,30 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X, ChevronDown, ChevronRight } from "lucide-react"
-import { HugIcon } from "@/components/icons/hug-icon"
+import { normalizeGroupProgramNavLinks } from "@/lib/groupProgram"
 
-const navLinks = [
-  { label: "Sobre Mi", href: "/sobre-mi" },
+interface NavLink {
+  label: string
+  href: string
+  children?: Array<{ label: string; href: string }>
+}
+
+interface NavigationProps {
+  mainLinks?: NavLink[]
+  ctaButton?: { label: string; href: string }
+  brandName?: string
+  logoSrc?: string
+  logoAlt?: string
+}
+
+const defaultNavLinks: NavLink[] = [
+  { label: "Sobre mí", href: "/sobre-mi" },
   {
     label: "Servicios",
     href: "/servicios",
     children: [
-      { label: "Terapia Individual", href: "/servicios/terapia-individual" },
-      { label: "Terapia Grupal", href: "/servicios/terapia-grupal" },
+      { label: "Sesiones individuales", href: "/servicios/terapia-individual" },
+      { label: "Terapia grupal", href: "/servicios/terapia-grupal" },
     ],
   },
   { label: "Testimonios", href: "/testimonios" },
@@ -19,16 +33,28 @@ const navLinks = [
   { label: "Contacto", href: "/contacto" },
 ]
 
-export default function Navigation() {
+export default function Navigation({
+  mainLinks,
+  ctaButton = { label: "Reservar cita", href: "/contacto" },
+  brandName = "Estela de Gracia",
+  logoSrc = "/logo-estela-de-gracia.png",
+  logoAlt,
+}: NavigationProps) {
+  const navLinks = normalizeGroupProgramNavLinks(mainLinks && mainLinks.length > 0 ? mainLinks : defaultNavLinks)
   const [isOpen, setIsOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [mobileReady, setMobileReady] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const [currentPath, setCurrentPath] = useState("")
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setCurrentPath(window.location.pathname)
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
   useEffect(() => {
@@ -66,20 +92,19 @@ export default function Navigation() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#f6f3f5]/80 backdrop-blur-lg border-b border-[#cfcdff]/30">
-        <div className="container mx-auto px-5">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#f6f3f5]/80 backdrop-blur-lg border-b border-[#cfcdff]/30 shadow-sm" : "bg-transparent border-b border-transparent"}`}>
+        <div className="container mx-auto px-6 sm:px-8 md:px-10 lg:px-12">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#98465d] to-[#9591eb] rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-md group-hover:shadow-lg group-hover:shadow-[#98465d]/25">
-                <HugIcon className="w-7 h-7" fill="white" />
-              </div>
-              <span className="font-display text-[#5d5a5a] tracking-wide text-base sm:text-lg">
-                Estela <span className="text-[#98465d]">de Gracia</span>
-              </span>
+            <a href="/" className="flex items-center group" aria-label={brandName}>
+              <img
+                src={logoSrc}
+                alt={logoAlt ?? brandName}
+                className="h-12 w-auto max-w-[190px] object-contain transition-transform duration-300 group-hover:scale-[1.02] sm:h-14 sm:max-w-[220px] lg:h-[58px]"
+                width={733}
+                height={253}
+              />
             </a>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) =>
                 link.children ? (
@@ -140,16 +165,14 @@ export default function Navigation() {
               )}
             </div>
 
-            {/* CTA Button */}
             <div className="hidden md:block">
-              <a href="/contacto">
+              <a href={ctaButton.href}>
                 <Button className="hover-shimmer bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-6 hover:shadow-lg hover:shadow-[#98465d]/25 transition-all duration-300">
-                  Reservar
+                  {ctaButton.label}
                 </Button>
               </a>
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               className="md:hidden w-11 h-11 flex items-center justify-center text-[#98465d] rounded-2xl hover:bg-[#98465d]/8 active:scale-95 transition-all"
               onClick={() => setIsOpen(true)}
@@ -161,34 +184,30 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-[100]">
-          {/* Backdrop */}
           <div
             className={`absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300 ${mobileReady ? "opacity-100" : "opacity-0"}`}
             onClick={closeMobile}
           />
 
-          {/* Panel */}
           <div
             className={`absolute top-0 right-0 bottom-0 w-[85%] max-w-sm bg-gradient-to-b from-[#f6f3f5] via-[#f6f3f5] to-[#f4eced] shadow-2xl transition-transform duration-300 ease-out ${
               mobileReady ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            {/* Decorative blob */}
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#98465d]/[0.04] rounded-full blur-3xl pointer-events-none" />
             <div className="absolute top-1/3 right-0 w-32 h-32 bg-[#9591eb]/[0.06] rounded-full blur-3xl pointer-events-none" />
 
-            {/* Header */}
             <div className="flex items-center justify-between px-6 h-20 border-b border-[#cfcdff]/20">
-              <a href="/" className="flex items-center gap-2.5" onClick={closeMobile}>
-                <div className="w-9 h-9 bg-gradient-to-br from-[#98465d] to-[#9591eb] rounded-full flex items-center justify-center shadow-sm">
-                  <HugIcon className="w-6 h-6" fill="white" />
-                </div>
-                <span className="font-display text-[#5d5a5a] text-[15px]">
-                  Estela <span className="text-[#98465d]">de Gracia</span>
-                </span>
+              <a href="/" className="flex items-center" onClick={closeMobile} aria-label={brandName}>
+                <img
+                  src={logoSrc}
+                  alt={logoAlt ?? brandName}
+                  className="h-12 w-auto max-w-[180px] object-contain"
+                  width={733}
+                  height={253}
+                />
               </a>
               <button
                 className="w-10 h-10 flex items-center justify-center text-[#5d5a5a]/60 rounded-xl hover:bg-[#98465d]/8 hover:text-[#98465d] active:scale-95 transition-all"
@@ -199,7 +218,6 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Links */}
             <div className="flex flex-col px-6 pt-6 pb-4 relative overflow-y-auto" style={{ maxHeight: "calc(100dvh - 80px)" }}>
               <nav className="flex flex-col gap-0.5">
                 {navLinks.map((link, i) =>
@@ -223,7 +241,7 @@ export default function Navigation() {
                         </a>
                         <button
                           onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
-                          aria-label="Ver submenú de servicios"
+                          aria-label="Ver submenu"
                           className="w-10 h-10 flex items-center justify-center text-[#5d5a5a]/40 hover:text-[#98465d] rounded-xl hover:bg-[#98465d]/[0.04] transition-all"
                         >
                           <ChevronDown
@@ -275,13 +293,11 @@ export default function Navigation() {
                 )}
               </nav>
 
-              {/* Divider */}
               <div className="h-px bg-gradient-to-r from-[#cfcdff]/30 via-[#98465d]/10 to-transparent my-5 mx-4" />
 
-              {/* CTA */}
-              <a href="/contacto" onClick={closeMobile} className="block">
+              <a href={ctaButton.href} onClick={closeMobile} className="block">
                 <Button className="w-full bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-2xl py-6 text-base font-medium shadow-lg shadow-[#98465d]/15 transition-all duration-300 hover:shadow-xl">
-                  Reservar Cita
+                  {ctaButton.label}
                 </Button>
               </a>
 

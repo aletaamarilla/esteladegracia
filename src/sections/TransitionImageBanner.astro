@@ -1,0 +1,92 @@
+---
+interface Props {
+  imageUrl: string
+  imageSrcSet?: string
+  imagePosition?: string
+  title?: string
+  subtitle?: string
+  ctaLabel?: string
+  ctaHref?: string
+  bgColor?: string
+}
+
+const {
+  imageUrl,
+  imageSrcSet,
+  imagePosition = 'center',
+  title,
+  subtitle,
+  ctaLabel,
+  ctaHref,
+  bgColor,
+} = Astro.props;
+---
+
+<section
+  class="relative overflow-hidden transition-banner"
+  style={`height: min(50vh, 450px);${bgColor ? ` background-color: ${bgColor};` : ''}`}
+>
+  <img
+    src={imageUrl}
+    srcset={imageSrcSet}
+    sizes="100vw"
+    alt={title || ''}
+    loading="lazy"
+    decoding="async"
+    class="absolute top-0 left-0 w-full h-full object-cover transition-banner-img"
+    style={`object-position: ${imagePosition}`}
+  />
+
+  <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/30"></div>
+
+  <div class="absolute inset-0 flex items-center justify-center z-10 text-center px-6">
+    {title && (
+      <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-white mb-4 text-balance drop-shadow-lg">
+        {title}
+      </h2>
+    )}
+    {subtitle && (
+      <p class="font-serif text-lg md:text-xl text-white/90 leading-relaxed mb-8 max-w-xl mx-auto drop-shadow-md">
+        {subtitle}
+      </p>
+    )}
+    {ctaLabel && ctaHref && (
+      <div class="hidden md:block">
+        <a
+          href={ctaHref}
+          class="hover-shimmer inline-flex items-center justify-center bg-white/90 hover:bg-white text-[#98465d] rounded-full px-8 py-4 text-lg font-medium transition-all hover:scale-105 hover:shadow-lg backdrop-blur-sm"
+        >
+          {ctaLabel}
+        </a>
+      </div>
+    )}
+  </div>
+
+  {ctaLabel && ctaHref && (
+    <div class="md:hidden absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#f6f3f5] to-transparent pt-16 pb-6 px-6">
+      <a
+        href={ctaHref}
+        class="hover-shimmer block text-center bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-8 py-4 text-base font-medium shadow-lg"
+      >
+        {ctaLabel}
+      </a>
+    </div>
+  )}
+</section>
+
+<style>
+  @supports (background-attachment: fixed) {
+    @media (min-width: 768px) and (hover: hover) {
+      .transition-banner-img {
+        background-attachment: fixed;
+        will-change: transform;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .transition-banner-img {
+      background-attachment: scroll !important;
+    }
+  }
+</style>

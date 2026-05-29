@@ -1,0 +1,27 @@
+---
+interface Props {
+  type: 'individual' | 'group'
+}
+
+const { type } = Astro.props
+
+const icon =
+  type === 'individual'
+    ? {
+        src: '/icon-terapia-individual.png',
+        className: 'w-9 h-9 md:w-10 md:h-10',
+      }
+    : {
+        src: '/icon-terapia-grupal.png',
+        className: 'w-12 h-[1.85rem] md:w-14 md:h-[2.15rem] max-w-none',
+      }
+---
+
+<img
+  src={icon.src}
+  alt=""
+  class={`object-contain ${icon.className}`}
+  loading="lazy"
+  decoding="async"
+  aria-hidden="true"
+/>

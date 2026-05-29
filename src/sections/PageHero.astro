@@ -11,6 +11,10 @@ interface Props {
   highlightColor?: 'rose' | 'purple';
   description?: string;
   breadcrumbs?: Breadcrumb[];
+  backgroundImageUrl?: string;
+  backgroundImageSrcSet?: string;
+  backgroundImagePosition?: string;
+  labelTransform?: 'uppercase' | 'none';
 }
 
 const {
@@ -20,55 +24,164 @@ const {
   highlightColor = 'rose',
   description,
   breadcrumbs,
+  backgroundImageUrl,
+  backgroundImageSrcSet,
+  backgroundImagePosition = 'center',
+  labelTransform = 'uppercase',
 } = Astro.props;
 
 const highlightClass = highlightColor === 'rose' ? 'text-[#98465d]' : 'text-[#9591eb]';
+const labelClass = labelTransform === 'uppercase' ? 'uppercase' : '';
+const hasImage = !!backgroundImageUrl;
 ---
 
-<section class="py-16 lg:py-24 bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5] relative overflow-hidden">
-  <!-- Decorative elements -->
-  <div class="absolute -top-20 -right-20 w-80 h-80 bg-[#cfcdff]/20 rounded-full blur-3xl"></div>
-  <div class="absolute bottom-0 -left-20 w-72 h-72 bg-[#98465d]/5 rounded-full blur-3xl"></div>
+<section class:list={['relative overflow-hidden', hasImage ? 'bg-[var(--soft-bg)]' : 'py-16 lg:py-24 bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5]']}>
+  {hasImage ? (
+    <>
+      {/* Gradiente cálido solo desktop */}
+      <div
+        class="pointer-events-none absolute inset-0 hidden sm:block"
+        aria-hidden="true"
+        style="background: linear-gradient(145deg, #f7f0f0 0%, #f5eee8 30%, #f3ece4 50%, #f0e8e0 70%, #efedf6 100%);"
+      />
+      <div class="relative flex flex-col sm:flex-row sm:items-stretch">
+        {/* ── Text column ── */}
+        <div class="order-2 flex flex-col justify-center bg-transparent px-6 pb-12 pt-8 sm:order-1 sm:w-[45%] sm:px-8 sm:pt-24 sm:pb-16 lg:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] lg:pr-14">
+          {breadcrumbs && breadcrumbs.length > 0 && (
+            <nav class="mb-6" aria-label="Breadcrumb">
+              <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
+                {breadcrumbs.map((crumb, i) => (
+                  <>
+                    {i > 0 && <span class="text-[#cfcdff]">/</span>}
+                    {crumb.href ? (
+                      <li>
+                        <a href={crumb.href} class="hover:text-[#98465d] transition-colors">
+                          {crumb.label}
+                        </a>
+                      </li>
+                    ) : (
+                      <li class="text-[#5d5a5a] font-medium">{crumb.label}</li>
+                    )}
+                  </>
+                ))}
+              </ol>
+            </nav>
+          )}
 
-  <div class="container mx-auto px-5 relative">
-    {breadcrumbs && breadcrumbs.length > 0 && (
-      <nav class="mb-8" aria-label="Breadcrumb">
-        <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
-          {breadcrumbs.map((crumb, i) => (
-            <>
-              {i > 0 && <span class="text-[#cfcdff]">/</span>}
-              {crumb.href ? (
-                <li>
-                  <a href={crumb.href} class="hover:text-[#98465d] transition-colors">
-                    {crumb.label}
-                  </a>
-                </li>
-              ) : (
-                <li class="text-[#5d5a5a] font-medium">{crumb.label}</li>
-              )}
-            </>
-          ))}
-        </ol>
-      </nav>
-    )}
+          <span class:list={['inline-block text-[#9591eb] font-medium mb-4 tracking-wide text-sm', labelClass]}>
+            {label}
+          </span>
+          <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
+            {title}{' '}
+            {highlight && <span class={highlightClass}>{highlight}</span>}
+          </h1>
+          {description && (
+            <p class="text-lg text-[#5d5a5a]/70 max-w-lg">
+              {description}
+            </p>
+          )}
 
-    <div class="text-center max-w-3xl mx-auto">
-      <span class="inline-block text-[#9591eb] font-medium mb-4 tracking-wide uppercase text-sm">
-        {label}
-      </span>
-      <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
-        {title}{' '}
-        {highlight && <span class={highlightClass}>{highlight}</span>}
-      </h1>
-      {description && (
-        <p class="text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
-          {description}
-        </p>
-      )}
-    </div>
+          <slot />
+        </div>
 
-    <slot />
-  </div>
+        {/* ── Image column ── */}
+        <div class="order-1 sm:order-2 sm:w-[55%]">
+          <div class="relative h-[110vw] max-h-[650px] w-full overflow-hidden sm:h-full sm:max-h-none sm:min-h-[650px] md:min-h-[700px] lg:min-h-[750px]">
+            <img
+              src={backgroundImageUrl}
+              srcset={backgroundImageSrcSet}
+              sizes="(max-width: 639px) 100vw, 55vw"
+              alt=""
+              role="presentation"
+              aria-hidden="true"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover"
+              style={`object-position: ${backgroundImagePosition}`}
+            />
+            <div
+              class="pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-32 sm:block md:w-40 lg:w-52"
+              style="background: linear-gradient(to right, #f3ece4 0%, rgba(243,236,228,0.85) 35%, rgba(243,236,228,0.4) 65%, transparent 100%);"
+              aria-hidden="true"
+            />
+            {/* Degradado inferior mobile: funde con color de marca */}
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 sm:hidden"
+              style="background: linear-gradient(to top, var(--soft-bg) 0%, rgba(246,243,245,0.75) 40%, transparent 100%);"
+              aria-hidden="true"
+            />
+            {/* Degradado inferior desktop */}
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] hidden sm:block sm:h-20"
+              style="background: linear-gradient(to top, #f0eef5 0%, rgba(240,238,245,0.75) 40%, transparent 100%);"
+              aria-hidden="true"
+            />
+            {/* Degradado superior mobile: funde con color de marca */}
+            <div
+              class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-20 sm:hidden"
+              style="background: linear-gradient(to bottom, rgba(246,243,245,0.9) 0%, transparent 100%);"
+              aria-hidden="true"
+            />
+            {/* Degradado superior desktop */}
+            <div
+              class="pointer-events-none absolute inset-x-0 top-0 z-[1] hidden sm:block sm:h-16"
+              style="background: linear-gradient(to bottom, rgba(243,236,228,0.9) 0%, transparent 100%);"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+      </div>
 
-  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-[#f0eef5] pointer-events-none"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-[var(--soft-bg)] pointer-events-none z-[2] sm:hidden"></div>
+      <div class="absolute bottom-0 left-0 right-0 hidden sm:block sm:h-16 bg-gradient-to-b from-transparent to-[#f0eef5] pointer-events-none z-[2]"></div>
+    </>
+  ) : (
+    <>
+      <div class="absolute -top-20 -right-20 w-80 h-80 bg-[#cfcdff]/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 -left-20 w-72 h-72 bg-[#98465d]/5 rounded-full blur-3xl"></div>
+
+      <div class="container mx-auto px-5 relative">
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <nav class="mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
+              {breadcrumbs.map((crumb, i) => (
+                <>
+                  {i > 0 && <span class="text-[#cfcdff]">/</span>}
+                  {crumb.href ? (
+                    <li>
+                      <a href={crumb.href} class="hover:text-[#98465d] transition-colors">
+                        {crumb.label}
+                      </a>
+                    </li>
+                  ) : (
+                    <li class="text-[#5d5a5a] font-medium">{crumb.label}</li>
+                  )}
+                </>
+              ))}
+            </ol>
+          </nav>
+        )}
+
+        <div class="text-center max-w-3xl mx-auto">
+          <span class:list={['inline-block text-[#9591eb] font-medium mb-4 tracking-wide text-sm', labelClass]}>
+            {label}
+          </span>
+          <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
+            {title}{' '}
+            {highlight && <span class={highlightClass}>{highlight}</span>}
+          </h1>
+          {description && (
+            <p class="text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
+              {description}
+            </p>
+          )}
+        </div>
+
+        <slot />
+      </div>
+
+      <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-[#f0eef5] pointer-events-none"></div>
+    </>
+  )}
 </section>

@@ -6,14 +6,26 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "fill-seo": "npx tsx scripts/fill-seo-defaults.ts",
+    "clean-test-data": "npx tsx scripts/clean-test-data.ts",
+    "fill-singletons": "npx tsx scripts/fill-singletons.ts",
+    "fill-services": "npx tsx scripts/fill-services.ts",
+    "fill-faqs": "npx tsx scripts/fill-faqs.ts",
+    "upload-photos": "npx tsx scripts/upload-photos.ts",
+    "assign-photos": "npx tsx scripts/assign-photos.ts",
+    "fill-blog-posts": "npx tsx scripts/fill-blog-posts.ts",
+    "update-blog-bodies": "npx tsx scripts/update-blog-bodies.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",
     "@astrojs/sitemap": "^3.7.0",
+    "@portabletext/to-html": "^5.0.2",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-slot": "^1.1.1",
     "@sanity/client": "^7.3.0",
+    "@sanity/image-url": "^2.0.3",
+    "@tailwindcss/typography": "^0.5.19",
     "astro": "^5.17.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -29,6 +41,7 @@
     "@types/react-dom": "^19",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
+    "tsx": "^4.21.0",
     "tw-animate-css": "^1.3.3",
     "typescript": "^5"
   }

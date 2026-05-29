@@ -1,37 +1,69 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import PageHero from '../sections/PageHero.astro';
-import CTABanner from '../sections/CTABanner.astro';
-import TestimonialsLanding from '../components/islands/TestimonialsLanding';
+import PageLayout from '@/layouts/PageLayout.astro'
+import PageHero from '@/sections/PageHero.astro'
+import CTABanner from '@/sections/CTABanner.astro'
+import TestimonialsLanding from '@/components/islands/TestimonialsLanding'
+import { sanityFetch } from '@/lib/sanity'
+import { testimonialsPageQuery, allTestimonialsQuery, siteSettingsQuery } from '@/lib/queries'
+import type { TestimonialsPage, Testimonial, SiteSettings } from '@/lib/sanityTypes'
+import { fullBleedHero, hotspotToObjectPosition, optimizeTestimonialPosters, portraitImage, portraitSrcSet, srcSet } from '@/lib/sanityImage'
+
+const [page, allTestimonials, settings] = await Promise.all([
+  sanityFetch<TestimonialsPage>(testimonialsPageQuery),
+  sanityFetch<Testimonial[]>(allTestimonialsQuery),
+  sanityFetch<SiteSettings>(siteSettingsQuery),
+])
+
+const whatsappUrl = settings?.contactInfo?.whatsappNumber
+  ? `https://wa.me/${settings.contactInfo.whatsappNumber}?text=${encodeURIComponent(settings.contactInfo.whatsappDefaultMessage ?? 'Hola! Me gustaria agendar una cita.')}`
+  : 'https://wa.me/34600000000'
+
+const optimizedTestimonials = optimizeTestimonialPosters(allTestimonials)
+
+const ctaRaw = page?.ctaBanner ?? {}
+const cta = {
+  title: ctaRaw.title,
+  highlight: ctaRaw.highlight,
+  description: ctaRaw.description,
+  primaryCta: ctaRaw.primaryCta,
+  secondaryCta: ctaRaw.secondaryCta,
+  backgroundImage: ctaRaw.backgroundImage,
+}
 ---
 
 <PageLayout
   title="Testimonios"
-  description="Lee y escucha las experiencias de personas reales que han transformado su vida con terapia."
+  description="Historias reales de personas que también estuvieron donde tú estás ahora. Descubre cómo la terapia puede transformar tu vida."
 >
   <PageHero
-    label="Testimonios"
-    title="Historias reales de"
-    highlight="personas reales"
+    label={page?.heroLabel}
+    title={page?.heroTitle}
+    highlight={page?.heroHighlight}
     highlightColor="rose"
-    description="Cada testimonio viene acompanado de un momento especial: un abrazo que simboliza el progreso y la conexion genuina."
+    description={page?.heroDescription}
     breadcrumbs={[
-      { label: "Inicio", href: "/" },
-      { label: "Testimonios" },
+      { label: 'Inicio', href: '/' },
+      { label: 'Testimonios' },
     ]}
+    backgroundImageUrl={page?.heroImage ? fullBleedHero(page.heroImage) : undefined}
+    backgroundImageSrcSet={page?.heroImage ? srcSet(page.heroImage) : undefined}
+    backgroundImagePosition={hotspotToObjectPosition(page?.heroImage)}
   />
 
   <div class="testimonials-bg">
-    <TestimonialsLanding client:visible />
+    <TestimonialsLanding client:visible testimonials={optimizedTestimonials} />
   </div>
 
   <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
     <CTABanner
-      title="Tu historia puede ser"
-      highlight="la siguiente. Empieza hoy."
-      description="Reserva una sesion de valoracion y descubre como la terapia puede transformar tu vida. Sin compromiso."
-      primaryCta={{ label: "Reservar mi primera sesion", href: "/contacto" }}
-      secondaryCta={{ label: "Ver servicios", href: "/servicios" }}
+      title={cta.title}
+      highlight={cta.highlight}
+      description={cta.description}
+      primaryCta={cta.primaryCta}
+      secondaryCta={cta.secondaryCta}
+      backgroundImageUrl={cta.backgroundImage ? portraitImage(cta.backgroundImage) : undefined}
+      backgroundImageSrcSet={cta.backgroundImage ? portraitSrcSet(cta.backgroundImage) : undefined}
+      backgroundImagePosition={hotspotToObjectPosition(cta.backgroundImage)}
     />
   </div>
 </PageLayout>

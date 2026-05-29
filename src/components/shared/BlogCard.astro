@@ -1,14 +1,18 @@
 ---
+import type { SanityImage } from '@/lib/sanityTypes'
+import { landscapeImage, landscapeSrcSet } from '@/lib/sanityImage'
+
 interface Props {
-  title: string;
-  description: string;
-  href: string;
-  date: Date;
-  category: string;
-  readingTime?: number;
+  title: string
+  description: string
+  href: string
+  date: string
+  category?: string
+  readingTime?: number
+  coverImage?: SanityImage
 }
 
-const { title, description, href, date, category, readingTime } = Astro.props;
+const { title, description, href, date, category, readingTime, coverImage } = Astro.props
 
 const categoryColors: Record<string, string> = {
   ansiedad: 'bg-[#98465d]/10 text-[#98465d]',
@@ -16,17 +20,37 @@ const categoryColors: Record<string, string> = {
   relaciones: 'bg-[#cfcdff] text-[#5d5a5a]',
   herramientas: 'bg-green-100 text-green-700',
   psicoeducacion: 'bg-amber-100 text-amber-700',
-};
+}
 
-const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
+const colorClass = category ? (categoryColors[category] ?? 'bg-[#f6f3f5] text-[#5d5a5a]') : 'bg-[#f6f3f5] text-[#5d5a5a]'
+
+const formattedDate = new Date(date).toLocaleDateString('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
 ---
 
 <a href={href} class="group block">
   <article class="bg-white rounded-3xl p-5 md:p-8 shadow-sm hover-lift h-full flex flex-col">
+    {coverImage && (
+      <img
+        src={landscapeImage(coverImage, 960, 90)}
+        srcset={landscapeSrcSet(coverImage, 90, [480, 640, 960, 1280])}
+        sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+        alt={title}
+        class="rounded-2xl mb-4 w-full object-cover aspect-[16/9]"
+        loading="lazy"
+        decoding="async"
+      />
+    )}
+
     <div class="flex items-center gap-3 mb-4">
-      <span class={`text-xs font-medium px-3 py-1 rounded-full ${colorClass}`}>
-        {category}
-      </span>
+      {category && (
+        <span class={`text-xs font-medium px-3 py-1 rounded-full ${colorClass}`}>
+          {category}
+        </span>
+      )}
       {readingTime && (
         <span class="text-xs text-[#5d5a5a]/50">{readingTime} min lectura</span>
       )}
@@ -41,8 +65,8 @@ const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
     </p>
 
     <div class="flex items-center justify-between pt-4 border-t border-[#f6f3f5]">
-      <time class="text-xs text-[#5d5a5a]/50" datetime={date.toISOString()}>
-        {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+      <time class="text-xs text-[#5d5a5a]/50" datetime={date}>
+        {formattedDate}
       </time>
       <span class="text-sm text-[#98465d] font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
         Leer

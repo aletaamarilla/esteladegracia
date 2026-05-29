@@ -1,29 +1,60 @@
 ---
-import Layout from './Layout.astro';
-import Navigation from '@/components/islands/Navigation';
-import FooterSection from '@/sections/FooterSection.astro';
-import StickyMobileCTA from '@/components/islands/StickyMobileCTA';
+import Layout from './Layout.astro'
+import Navigation from '@/components/islands/Navigation'
+import FooterSection from '@/sections/FooterSection.astro'
+import StickyMobileCTA from '@/components/islands/StickyMobileCTA'
+import { sanityFetch } from '@/lib/sanity'
+import { siteSettingsQuery } from '@/lib/queries'
+import type { SiteSettings } from '@/lib/sanityTypes'
+import { normalizeGroupProgramNavLinks } from '@/lib/groupProgram'
+import { urlFor } from '@/lib/sanityImage'
 
 interface Props {
-  title: string;
-  description?: string;
-  showStickyMobileCTA?: boolean;
+  title: string
+  description?: string
+  showStickyMobileCTA?: boolean
 }
+
+const settings = await sanityFetch<SiteSettings>(siteSettingsQuery)
 
 const {
   title,
-  description = 'Psicologia autentica, cercana y real. Terapia individual y grupal para ansiedad, trauma y autoestima.',
+  description = settings?.tagline ?? 'Psicologia autentica, cercana y real. Terapia individual y grupal para ansiedad, trauma y autoestima.',
   showStickyMobileCTA = true,
-} = Astro.props;
+} = Astro.props
+
+const navLinks = normalizeGroupProgramNavLinks(settings?.navigation?.mainLinks ?? [])
+const ctaButton = settings?.navigation?.ctaButton ?? { label: 'Reservar', href: '/contacto' }
+const whatsappUrl = settings?.contactInfo?.whatsappNumber
+  ? `https://wa.me/${settings.contactInfo.whatsappNumber}?text=${encodeURIComponent(settings.contactInfo.whatsappDefaultMessage ?? 'Hola! Me gustaria agendar una cita.')}`
+  : 'https://wa.me/34600000000'
+const brandLogoSrc = settings?.logo ? urlFor(settings.logo).width(733).quality(95).url() : '/logo-estela-de-gracia.png'
 ---
 
-<Layout title={`${title} | Estela de Gracia`} description={description}>
+<Layout title={`${title} | ${settings?.brandName ?? 'Estela de Gracia'}`} description={description}>
   <main class="min-h-screen relative">
-    <Navigation client:load />
+    <Navigation
+      client:load
+      mainLinks={navLinks}
+      ctaButton={ctaButton}
+      brandName={settings?.brandName ?? 'Estela de Gracia'}
+      logoSrc={brandLogoSrc}
+    />
     <div class="pt-20">
       <slot />
     </div>
-    <FooterSection />
-    {showStickyMobileCTA && <StickyMobileCTA client:idle />}
+    <FooterSection
+      brandName={settings?.brandName ?? 'Estela de Gracia'}
+      tagline={settings?.tagline}
+      footerContent={settings?.footerContent}
+      contactInfo={settings?.contactInfo}
+      socialLinks={settings?.socialLinks}
+      whatsappUrl={whatsappUrl}
+      navLinks={navLinks}
+      logoSrc={brandLogoSrc}
+    />
+    {showStickyMobileCTA && (
+      <StickyMobileCTA client:idle whatsappUrl={whatsappUrl} />
+    )}
   </main>
 </Layout>

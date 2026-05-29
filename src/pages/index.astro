@@ -1,64 +1,263 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import HeroSection from '../sections/HeroSection.astro';
-import ServicesSection from '../sections/ServicesSection.astro';
-import FooterSection from '../sections/FooterSection.astro';
-import CTABanner from '../sections/CTABanner.astro';
+import Layout from '@/layouts/Layout.astro'
+import Navigation from '@/components/islands/Navigation'
+import HeroSection from '@/sections/HeroSection.astro'
 
-import Navigation from '../components/islands/Navigation';
-import AboutAnimated from '../components/islands/AboutAnimated';
-import ProblemsAnimated from '../components/islands/ProblemsAnimated';
-import TestimonialsSection from '../components/islands/TestimonialsSection';
-import LeadMagnetSection from '../components/islands/LeadMagnetSection';
-import FAQSection from '../components/islands/FAQSection';
-import StickyMobileCTA from '../components/islands/StickyMobileCTA';
+import TransitionImageBanner from '@/sections/TransitionImageBanner.astro'
+import ServicesSection from '@/sections/ServicesSection.astro'
+import CTABanner from '@/sections/CTABanner.astro'
+import FooterSection from '@/sections/FooterSection.astro'
+
+import AboutAnimated from '@/components/islands/AboutAnimated'
+import ProblemsAnimated from '@/components/islands/ProblemsAnimated'
+import TestimonialsSection from '@/components/islands/TestimonialsSection'
+import LeadMagnetSection from '@/components/islands/LeadMagnetSection'
+import FAQSection from '@/components/islands/FAQSection'
+import StickyMobileCTA from '@/components/islands/StickyMobileCTA'
+import GroupLaunchBanner from '@/components/islands/GroupLaunchBanner'
+
+import { sanityFetch } from '@/lib/sanity'
+import { homePageQuery, siteSettingsQuery } from '@/lib/queries'
+import type { HomePage, SiteSettings } from '@/lib/sanityTypes'
+import { fullBleedHero, heroImage, hotspotToObjectPosition, optimizeTestimonialPosters, portraitImage, portraitSrcSet, profilePhoto, srcSet, urlFor, videoPosterImage, videoPosterSrcSet } from '@/lib/sanityImage'
+import { GROUP_PROGRAM, normalizeGroupProgramNavLinks } from '@/lib/groupProgram'
+
+const [page, settings] = await Promise.all([
+  sanityFetch<HomePage>(homePageQuery),
+  sanityFetch<SiteSettings>(siteSettingsQuery),
+])
+
+const navLinks = normalizeGroupProgramNavLinks(settings?.navigation?.mainLinks ?? [])
+
+const normalizeAboutHref = (href?: string, label?: string) => {
+  const normalizedHref = href?.trim()
+  const normalizedLabel = label?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+  const isAboutLabel = normalizedLabel?.includes('conoceme mejor')
+
+  if (normalizedHref && normalizedHref !== '#') return normalizedHref
+  if (isAboutLabel) return '/sobre-mi'
+  return undefined
+}
+
+/** Misma acción principal en hero y cabecera cuando el CMS define el CTA del hero. */
+const defaultPrimaryCta = { label: 'Reservar cita', href: '/contacto' }
+const heroPrimaryFromCms = page?.hero?.primaryCta
+const heroSecondaryFromCms = page?.hero?.secondaryCta
+const resolvedHeroPrimary =
+  heroPrimaryFromCms?.label && heroPrimaryFromCms?.href ? heroPrimaryFromCms : defaultPrimaryCta
+const resolvedHeroSecondary =
+  heroSecondaryFromCms?.label
+    ? {
+        label: heroSecondaryFromCms.label,
+        href: normalizeAboutHref(heroSecondaryFromCms.href, heroSecondaryFromCms.label) ?? heroSecondaryFromCms.href,
+      }
+    : undefined
+const ctaButton =
+  heroPrimaryFromCms?.label && heroPrimaryFromCms?.href
+    ? { label: heroPrimaryFromCms.label, href: heroPrimaryFromCms.href }
+    : (settings?.navigation?.ctaButton ?? resolvedHeroPrimary)
+const resolvedNavCtaButton =
+  ctaButton?.label
+    ? {
+        ...ctaButton,
+        href: normalizeAboutHref(ctaButton.href, ctaButton.label) ?? ctaButton.href,
+      }
+    : ctaButton
+
+const whatsappUrl = settings?.contactInfo?.whatsappNumber
+  ? `https://wa.me/${settings.contactInfo.whatsappNumber}?text=${encodeURIComponent(settings.contactInfo.whatsappDefaultMessage ?? 'Hola, me gustaría agendar una cita.')}`
+  : 'https://wa.me/34600000000'
+const brandLogoSrc = settings?.logo ? urlFor(settings.logo).width(733).quality(95).url() : '/logo-estela-de-gracia.png'
+
+const humanImage = page?.aboutPreview?.humanImage
+const humanImageUrl = humanImage ? portraitImage(humanImage, 1600, 95) : undefined
+const humanImageSrcSetValue = humanImage ? portraitSrcSet(humanImage, 95) : undefined
+const humanImagePosition = hotspotToObjectPosition(humanImage)
+
+const profileImage = page?.aboutPreview?.profileImage
+const profileImageSrcSetValue = profileImage ? portraitSrcSet(profileImage, 95) : undefined
+const profileImagePosition = hotspotToObjectPosition(profileImage)
+
+const transition = page?.transitionSection
+const transitionImageUrl = transition?.image ? fullBleedHero(transition.image) : undefined
+const transitionImageSrcSetValue = transition?.image ? srcSet(transition.image) : undefined
+const transitionImagePosition = transition?.image ? hotspotToObjectPosition(transition.image) : undefined
+
+const groupBanner = page?.groupLaunchBanner
+const groupBannerBgUrl = groupBanner?.backgroundImage ? fullBleedHero(groupBanner.backgroundImage) : undefined
+const groupBannerBgSrcSet = groupBanner?.backgroundImage ? srcSet(groupBanner.backgroundImage) : undefined
+const groupBannerBgPosition = groupBanner?.backgroundImage ? hotspotToObjectPosition(groupBanner.backgroundImage) : undefined
+const groupProgramLogo = '/logo-programa-mirarte-distinto.png'
+
+const ctaRaw = page?.ctaBanner ?? {}
+const cta = {
+  title: ctaRaw.title,
+  highlight: ctaRaw.highlight,
+  description: ctaRaw.description,
+  primaryCta: ctaRaw.primaryCta,
+  secondaryCta: ctaRaw.secondaryCta,
+  backgroundImage: ctaRaw.backgroundImage,
+}
+
+const optimizedTestimonials = optimizeTestimonialPosters(page?.testimonials)
 ---
 
-<Layout>
+<Layout
+  personImageUrl={page?.aboutPreview?.profileImage ? profilePhoto(page.aboutPreview.profileImage) : undefined}
+  heroImagePreload={
+    page?.hero?.backgroundImage
+      ? {
+          url: heroImage(page.hero.backgroundImage),
+          srcset: srcSet(page.hero.backgroundImage, [640, 960, 1280, 1600, 1920, 2560], 88),
+        }
+      : undefined
+  }
+>
   <main class="min-h-screen relative">
-    <Navigation client:load />
-    <HeroSection />
+    <Navigation
+      client:load
+      mainLinks={navLinks}
+      ctaButton={resolvedNavCtaButton}
+      brandName={settings?.brandName ?? 'Estela de Gracia'}
+      logoSrc={brandLogoSrc}
+    />
 
-    <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff1">
-      <AboutAnimated client:visible />
-      <div class="text-center pb-16 -mt-8">
+    <HeroSection
+      badge={page?.hero?.badge}
+      headline={page?.hero?.headline}
+      headlineHighlight={page?.hero?.headlineHighlight}
+      subtitle={page?.hero?.subtitle}
+      primaryCta={resolvedHeroPrimary}
+      secondaryCta={resolvedHeroSecondary}
+      trustBadge={page?.hero?.trustBadge}
+      backgroundImageUrl={page?.hero?.backgroundImage ? heroImage(page.hero.backgroundImage) : undefined}
+      backgroundImageSrcSet={
+        page?.hero?.backgroundImage ? srcSet(page.hero.backgroundImage, [640, 960, 1280, 1600, 1920, 2560], 88) : undefined
+      }
+      backgroundImagePosition={hotspotToObjectPosition(page?.hero?.backgroundImage)}
+      backgroundImageAlt={page?.hero?.heroImageAlt}
+      rotatingPhrases={page?.hero?.rotatingPhrases}
+      scrollInviteText={page?.hero?.scrollInviteText}
+      presentationVideoUrl={page?.hero?.presentationVideoUrl}
+      videoLabel={page?.hero?.videoPlaceholderText}
+      videoPosterUrl={page?.hero?.videoPoster ? videoPosterImage(page.hero.videoPoster) : undefined}
+      videoPosterSrcSet={page?.hero?.videoPoster ? videoPosterSrcSet(page.hero.videoPoster) : undefined}
+    />
+
+    {groupBanner?.enabled && (
+      <GroupLaunchBanner
+        client:visible
+        badge={groupBanner.badge}
+        title={groupBanner.title}
+        subtitle={groupBanner.subtitle}
+        ctaLabel={groupBanner.ctaLabel}
+        ctaHref={groupBanner.ctaHref}
+        secondaryCtaLabel={groupBanner.secondaryCtaLabel}
+        secondaryCtaHref={groupBanner.secondaryCtaHref}
+        programLogoSrc={groupProgramLogo}
+        programLogoAlt="Mirarte distinto"
+        backgroundImageUrl={groupBannerBgUrl}
+        backgroundImageSrcSet={groupBannerBgSrcSet}
+        backgroundImagePosition={groupBannerBgPosition}
+      />
+    )}
+
+    <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f5eff1">
+      <AboutAnimated
+        client:visible
+        sectionLabel={page?.aboutPreview?.sectionLabel}
+        title={page?.aboutPreview?.title}
+        titleHighlight={page?.aboutPreview?.titleHighlight}
+        professionalStats={page?.aboutPreview?.professionalStats}
+        personalQuote={page?.aboutPreview?.personalQuote}
+        personalTraits={page?.aboutPreview?.personalTraits}
+        profileImageUrl={profileImage ? portraitImage(profileImage, 1600, 95) : undefined}
+        profileImageSrcSet={profileImageSrcSetValue}
+        profileImagePosition={profileImagePosition}
+        humanImageUrl={humanImageUrl}
+        humanImageSrcSet={humanImageSrcSetValue}
+        humanImagePosition={humanImagePosition}
+      />
+      <div class="relative z-20 text-center pb-16 -mt-8">
         <a
           href="/sobre-mi"
-          class="inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all"
+          class="relative z-20 inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all"
         >
-          Conoceme mejor
+          {page?.aboutPreview?.linkText ?? 'Conóceme mejor'}
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
     </div>
 
     <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #f0eef6">
-      <ProblemsAnimated client:visible />
+      <ProblemsAnimated
+        client:visible
+        sectionLabel={page?.problemsSection?.sectionLabel}
+        title={page?.problemsSection?.title}
+        titleHighlight={page?.problemsSection?.titleHighlight}
+        problems={page?.problemsSection?.problems}
+        transitionLabel={page?.problemsSection?.transitionLabel}
+        helpTitle={page?.problemsSection?.helpTitle}
+        helpTitleHighlight={page?.problemsSection?.helpTitleHighlight}
+        helpSubtitle={page?.problemsSection?.helpSubtitle}
+        helpCards={page?.problemsSection?.helpCards}
+        ctaLabel={page?.problemsSection?.ctaLabel}
+        ctaHref={page?.problemsSection?.ctaHref}
+      />
     </div>
 
+    {transitionImageUrl && (
+      <TransitionImageBanner
+        imageUrl={transitionImageUrl}
+        imageSrcSet={transitionImageSrcSetValue}
+        imagePosition={transitionImagePosition}
+        title={transition?.title}
+        subtitle={transition?.subtitle}
+        ctaLabel={transition?.ctaLabel}
+        ctaHref={transition?.ctaHref}
+      />
+    )}
+
     <div class="section-flow" style="--section-bg: #f0eef6; --next-bg: #f4eced">
-      <ServicesSection />
+      <ServicesSection
+        sectionLabel={page?.servicesPreview?.sectionLabel}
+        title={page?.servicesPreview?.title}
+        titleHighlight={page?.servicesPreview?.titleHighlight}
+        subtitle={page?.servicesPreview?.subtitle}
+      />
     </div>
 
     <div class="section-flow" style="--section-bg: #f4eced; --next-bg: #efedf6">
-      <TestimonialsSection client:visible />
-      <div class="text-center pb-16 -mt-8">
+      <TestimonialsSection client:visible testimonials={optimizedTestimonials} />
+      <div class="text-center pb-16 -mt-8 relative z-10">
         <a
           href="/testimonios"
           class="inline-flex items-center gap-2 text-[#98465d] font-medium hover:underline underline-offset-4 transition-all"
         >
-          Ver todos los testimonios
+          Quiero conocer el resto de las historias
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
     </div>
 
     <div class="section-flow" style="--section-bg: #efedf6; --next-bg: #f5eff1">
-      <LeadMagnetSection client:visible />
+      <LeadMagnetSection
+        client:visible
+        badge={page?.leadMagnet?.badge}
+        title={page?.leadMagnet?.title}
+        titleHighlight={page?.leadMagnet?.titleHighlight}
+        description={page?.leadMagnet?.description}
+        features={page?.leadMagnet?.features}
+        formLabel={page?.leadMagnet?.formLabel}
+        buttonText={page?.leadMagnet?.buttonText}
+        successTitle={page?.leadMagnet?.successTitle}
+        successMessage={page?.leadMagnet?.successMessage}
+        privacyNote={page?.leadMagnet?.privacyNote}
+      />
     </div>
 
     <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #f5eff2">
-      <FAQSection client:visible />
+      <FAQSection client:visible faqItems={page?.faqItems} />
       <div class="text-center pb-16 -mt-8">
         <a
           href="/faq"
@@ -72,15 +271,27 @@ import StickyMobileCTA from '../components/islands/StickyMobileCTA';
 
     <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
       <CTABanner
-        title="¿Lista para dar el primer paso?"
-        highlight="No tienes que hacerlo sola."
-        description="Reserva tu sesion de valoracion y empecemos juntas. Sin compromiso."
-        primaryCta={{ label: 'Reservar mi primera sesion', href: '/contacto' }}
-        secondaryCta={{ label: 'Escribeme por WhatsApp', href: 'https://wa.me/34600000000' }}
+        title={cta.title}
+        highlight={cta.highlight}
+        description={cta.description}
+        primaryCta={cta.primaryCta}
+        secondaryCta={cta.secondaryCta}
+        backgroundImageUrl={cta.backgroundImage ? portraitImage(cta.backgroundImage) : undefined}
+        backgroundImageSrcSet={cta.backgroundImage ? portraitSrcSet(cta.backgroundImage) : undefined}
+        backgroundImagePosition={hotspotToObjectPosition(cta.backgroundImage)}
       />
     </div>
 
-    <FooterSection />
-    <StickyMobileCTA client:load />
+    <FooterSection
+      brandName={settings?.brandName ?? 'Estela de Gracia'}
+      tagline={settings?.tagline}
+      footerContent={settings?.footerContent}
+      contactInfo={settings?.contactInfo}
+      socialLinks={settings?.socialLinks}
+      whatsappUrl={whatsappUrl}
+      navLinks={navLinks}
+      logoSrc={brandLogoSrc}
+    />
+    <StickyMobileCTA client:idle whatsappUrl={whatsappUrl} />
   </main>
 </Layout>

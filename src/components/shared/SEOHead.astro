@@ -1,0 +1,33 @@
+---
+interface Props {
+  title?: string
+  description?: string
+}
+
+const { title, description } = Astro.props
+
+const metaTitle = title ?? 'Estela de Gracia | Psicología Sin Distancia'
+const metaDescription =
+  description ??
+  'Psicología online especializada en ansiedad. Terapia individual y grupal desde Madrid para todo el mundo.'
+const fullTitle = metaTitle.includes('Estela de Gracia') ? metaTitle : `${metaTitle} · Estela de Gracia`
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={metaDescription} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:type" content="website" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={metaDescription} />
+
+<!-- GEO Meta Tags -->
+<meta name="geo.region" content="ES-MD" />
+<meta name="geo.placename" content="Madrid, España" />
+<meta name="geo.position" content="40.4168;-3.7038" />
+<meta name="ICBM" content="40.4168, -3.7038" />

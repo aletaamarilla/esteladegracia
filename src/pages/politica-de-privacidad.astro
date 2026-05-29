@@ -1,0 +1,45 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import { sanityFetch } from '@/lib/sanity'
+import { privacyPolicyQuery } from '@/lib/queries'
+import { portableTextToHtml } from '@/lib/portableText'
+import type { PrivacyPolicyPage } from '@/lib/sanityTypes'
+
+const page = await sanityFetch<PrivacyPolicyPage>(privacyPolicyQuery)
+
+const title = page?.title ?? 'Política de Privacidad'
+const bodyHtml = page?.body ? portableTextToHtml(page.body) : ''
+const lastUpdated = page?.lastUpdated
+  ? new Date(page.lastUpdated).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : null
+---
+
+<PageLayout
+  title={title}
+  description="Política de Privacidad de Estela de Gracia — Psicología. Información sobre el tratamiento de datos personales."
+  showStickyMobileCTA={false}
+>
+  <article class="container mx-auto px-5 py-16 max-w-3xl">
+    <h1 class="font-serif text-3xl md:text-4xl font-bold text-[#5d5a5a] mb-4">
+      {title}
+    </h1>
+
+    {lastUpdated && (
+      <p class="text-sm text-[#5d5a5a]/60 mb-10">
+        Última actualización: {lastUpdated}
+      </p>
+    )}
+
+    {bodyHtml ? (
+      <div class="blog-body" set:html={bodyHtml} />
+    ) : (
+      <p class="text-[#5d5a5a]/70 italic">
+        El contenido de la política de privacidad se publicará próximamente.
+      </p>
+    )}
+  </article>
+</PageLayout>

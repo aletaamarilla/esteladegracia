@@ -26,10 +26,11 @@ export default function GroupTherapyTimeline({ months }: { months: MonthData[] }
     { bg: "from-[#98465d]/10 to-[#98465d]/5", accent: "#98465d", ring: "ring-[#98465d]/20" },
     { bg: "from-[#9591eb]/10 to-[#9591eb]/5", accent: "#9591eb", ring: "ring-[#9591eb]/20" },
     { bg: "from-[#cfcdff]/30 to-[#cfcdff]/10", accent: "#5d5a5a", ring: "ring-[#cfcdff]/30" },
+    { bg: "from-[#98465d]/8 to-[#9591eb]/8", accent: "#98465d", ring: "ring-[#98465d]/15" },
   ]
 
   return (
-    <div ref={sectionRef} className="grid md:grid-cols-3 gap-6">
+    <div ref={sectionRef} className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
       {months.map((month, index) => {
         const color = colors[index] || colors[0]
         return (
@@ -41,12 +42,13 @@ export default function GroupTherapyTimeline({ months }: { months: MonthData[] }
             style={{ transitionDelay: `${index * 0.2}s` }}
           >
             <div className={`bg-gradient-to-br ${color.bg} rounded-3xl p-5 md:p-8 h-full`}>
-              {/* Month number */}
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ring-4 ${color.ring}`}
+                className={`inline-flex items-center rounded-full px-4 py-2 mb-5 ring-4 ${color.ring} shadow-sm`}
                 style={{ backgroundColor: color.accent }}
               >
-                <span className="text-white font-bold text-lg">{month.month}</span>
+                <span className="text-white text-xs font-semibold uppercase tracking-[0.18em]">
+                  Mes {month.month}
+                </span>
               </div>
 
               <h3 className="font-display text-xl text-[#5d5a5a] mb-2">{month.title}</h3>

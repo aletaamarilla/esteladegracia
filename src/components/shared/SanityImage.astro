@@ -1,0 +1,72 @@
+---
+import { urlFor, srcSet, hotspotToObjectPosition } from '@/lib/sanityImage'
+import type { SanityImage } from '@/lib/sanityTypes'
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+
+interface Props {
+  source: SanityImageSource
+  image?: SanityImage
+  alt: string
+  width?: number
+  height?: number
+  widths?: number[]
+  sizes?: string
+  quality?: number
+  priority?: boolean
+  background?: boolean
+  aspectRatio?: string
+  class?: string
+}
+
+const {
+  source,
+  image,
+  alt,
+  width = 800,
+  height,
+  widths = [640, 960, 1280, 1920],
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw',
+  quality = 90,
+  priority = false,
+  background = false,
+  aspectRatio,
+  class: className,
+} = Astro.props
+
+const fallbackBuilder = urlFor(source).width(width).format('webp').quality(quality)
+if (height) fallbackBuilder.height(height)
+const fallbackSrc = fallbackBuilder.url()
+
+const srcSetValue = srcSet(source, widths, quality)
+const objectPosition = hotspotToObjectPosition(image)
+
+const imgProps = {
+  src: fallbackSrc,
+  srcset: srcSetValue,
+  sizes,
+  width,
+  height,
+  loading: priority ? 'eager' as const : 'lazy' as const,
+  fetchpriority: priority ? 'high' as const : undefined,
+  decoding: priority ? 'sync' as const : 'async' as const,
+  class: className,
+  style: [
+    objectPosition !== 'center' ? `object-position: ${objectPosition}` : '',
+    aspectRatio ? `aspect-ratio: ${aspectRatio}` : '',
+  ].filter(Boolean).join('; ') || undefined,
+}
+---
+
+{background ? (
+  <img
+    {...imgProps}
+    alt=""
+    role="presentation"
+    aria-hidden="true"
+  />
+) : (
+  <img
+    {...imgProps}
+    alt={alt}
+  />
+)}

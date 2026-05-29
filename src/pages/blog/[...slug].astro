@@ -1,27 +1,71 @@
 ---
-import { getCollection } from 'astro:content';
-import BlogLayout from '@/layouts/BlogLayout.astro';
+import BlogLayout from '@/layouts/BlogLayout.astro'
+import { sanityFetch } from '@/lib/sanity'
+import { allBlogPostsQuery, blogPostQuery, siteSettingsQuery } from '@/lib/queries'
+import { portableTextToHtml } from '@/lib/portableText'
+import type { BlogPostPreview, BlogPostDetail, SiteSettings } from '@/lib/sanityTypes'
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: post,
-  }));
+  const posts = await sanityFetch<BlogPostPreview[]>(allBlogPostsQuery)
+  return (posts ?? []).map((post) => ({
+    params: { slug: post.slug.current },
+  }))
 }
 
-const post = Astro.props;
-const { Content } = await post.render();
+const { slug } = Astro.params
+const [post, siteSettings] = await Promise.all([
+  sanityFetch<BlogPostDetail>(blogPostQuery, { slug }),
+  sanityFetch<SiteSettings>(siteSettingsQuery),
+])
+
+if (!post) {
+  return Astro.redirect('/blog')
+}
+
+const whatsappNumber = siteSettings?.contactInfo?.whatsappNumber
+const whatsappDefaultMessage = siteSettings?.contactInfo?.whatsappDefaultMessage ?? `Hola Estela, he leído tu artículo "${post.title}" y me gustaría reservar una sesión.`
+const whatsappUrl = whatsappNumber
+  ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappDefaultMessage)}`
+  : undefined
+const contactUrl = `/contacto?utm_source=blog&utm_medium=cta&utm_content=${slug}`
+
+const bodyHtml = post.body
+  ? portableTextToHtml(post.body, { whatsappUrl, contactUrl: `/contacto?utm_source=blog&utm_medium=inline_cta&utm_content=${slug}` })
+  : ''
 ---
 
 <BlogLayout
-  title={post.data.title}
-  description={post.data.description}
-  publishedDate={post.data.publishedDate}
-  updatedDate={post.data.updatedDate}
-  category={post.data.category}
-  readingTime={post.data.readingTime}
-  author={post.data.author}
->
-  <Content />
-</BlogLayout>
+  title={post.title}
+  description={post.description}
+  publishedDate={post.publishedDate}
+  updatedDate={post.updatedDate}
+  category={post.category}
+  readingTime={post.readingTime}
+  author={post.author}
+  bodyHtml={bodyHtml}
+  relatedPosts={post.relatedPosts}
+  whatsappUrl={whatsappUrl}
+  postSlug={slug}
+/>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": post.title,
+  "description": post.description,
+  "datePublished": post.publishedDate,
+  ...(post.updatedDate && { "dateModified": post.updatedDate }),
+  "author": {
+    "@type": "Person",
+    "name": post.author ?? "Estela de Gracia",
+  },
+  ...(post.readingTime && { "timeRequired": `PT${post.readingTime}M` }),
+  "publisher": {
+    "@type": "Organization",
+    "name": "Psicología Sin Distancia",
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `${Astro.site}blog/${slug}`,
+  },
+})} />

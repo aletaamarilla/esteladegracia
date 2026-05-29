@@ -1,165 +1,199 @@
-import { useState } from "react"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { useState, useRef, useEffect, useCallback } from "react"
+import { ChevronDown } from "lucide-react"
+import type { FaqItem } from "@/lib/sanityTypes"
+import { GROUP_PROGRAM, normalizeGroupProgramText } from "@/lib/groupProgram"
 
-const faqData = {
-  individual: [
-    {
-      question: "Que pasa en la primera sesion?",
-      answer: "La primera sesion es una evaluacion donde nos conocemos. Te preguntare sobre tu historia, que te trae a terapia y que esperas lograr. Tambien es una oportunidad para que hagas preguntas y veas si somos un buen match. Sin presion—solo una conversacion abierta.",
-    },
-    {
-      question: "Cuanto duran las sesiones?",
-      answer: "Las sesiones de terapia individual duran 50 minutos. Esto nos da suficiente tiempo para profundizar mientras mantenemos las cosas enfocadas y productivas. Algunos clientes prefieren sesiones mas largas para trabajo especifico como procesamiento de trauma—podemos discutir que funciona mejor para ti.",
-    },
-    {
-      question: "Con que frecuencia deberia venir?",
-      answer: "La mayoria de los clientes comienzan con sesiones semanales. A medida que progresas, podriamos pasar a sesiones quincenales o mensuales. La frecuencia siempre es flexible y basada en tus necesidades, metas y lo que se sienta correcto para ti.",
-    },
-  ],
-  group: [
-    {
-      question: "Cuantas personas hay en un grupo?",
-      answer: "Los grupos se mantienen pequenos e intimos—entre 6 a 8 participantes. Esto asegura que todos tengan espacio para compartir mientras se benefician de diversas perspectivas y experiencias.",
-    },
-    {
-      question: "Que incluye el kit de herramientas?",
-      answer: "El kit de herramientas incluye hojas de trabajo, ejercicios guiados, prompts de diario y recursos que complementan nuestro trabajo grupal. Tambien tendras acceso a grabaciones de meditaciones guiadas y tecnicas que practicamos juntos.",
-    },
-    {
-      question: "Puedo unirme con un amigo?",
-      answer: "Absolutamente! Lo alentamos. Cuando traes a un amigo, ambos reciben \u20AC30 de descuento en el programa. El crecimiento compartido con alguien en quien confias puede ser increiblemente poderoso.",
-    },
-  ],
-  anxiety: [
-    {
-      question: "Que tecnicas usas para la ansiedad?",
-      answer: "Uso una combinacion de enfoques basados en evidencia incluyendo Terapia Cognitivo-Conductual (TCC), tecnicas de mindfulness y practicas somaticas. Trabajaremos juntos para encontrar lo que resuena contigo—la terapia nunca deberia sentirse como un enfoque unico para todos.",
-    },
-    {
-      question: "Que tan rapido vere resultados?",
-      answer: "El viaje de cada persona es diferente, pero la mayoria de los clientes notan algun alivio dentro de las primeras sesiones—a menudo solo por ser escuchados y comprendidos. El cambio duradero tipicamente se desarrolla en 8-12 sesiones, aunque esto varia segun las circunstancias individuales.",
-    },
-    {
-      question: "Ofreces apoyo de emergencia?",
-      answer: "Aunque no proporciono soporte de crisis 24/7, ofrezco flexibilidad para situaciones urgentes. Siempre te proporcionare recursos de emergencia y crearemos un plan de seguridad juntos como parte de tu tratamiento.",
-    },
-  ],
+type CategoryKey = "individual" | "grupal" | "ansiedad"
+
+interface FAQSectionProps {
+  faqItems?: FaqItem[]
+  showAll?: boolean
+  category?: CategoryKey
 }
 
 const tabs = [
-  { key: "individual" as const, label: "Individual", color: "#98465d", bgColor: "#98465d" },
-  { key: "group" as const, label: "Grupal", color: "#9591eb", bgColor: "#9591eb" },
-  { key: "anxiety" as const, label: "Ansiedad", color: "#5d5a5a", bgColor: "#cfcdff" },
+  { key: "individual" as const, label: "Individual", accent: "#98465d", borderClass: "border-l-[#98465d]" },
+  { key: "grupal" as const, label: GROUP_PROGRAM.navLabel, accent: "#9591eb", borderClass: "border-l-[#9591eb]" },
+  { key: "ansiedad" as const, label: "Ansiedad", accent: "#5d5a5a", borderClass: "border-l-[#5d5a5a]" },
 ]
 
-function FAQAccordion({ items, accentColor, prefix }: { items: typeof faqData.individual, accentColor: string, prefix: string }) {
+function normalizeCategory(category?: FaqItem["category"]): CategoryKey | undefined {
+  if (category === "group") return "grupal"
+  if (category === "anxiety") return "ansiedad"
+  return category
+}
+
+function AccordionItem({
+  question,
+  answer,
+  isOpen,
+  onToggle,
+  borderClass,
+}: {
+  question: string
+  answer: string
+  isOpen: boolean
+  onToggle: () => void
+  borderClass: string
+}) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(contentRef.current.scrollHeight)
+    }
+  }, [answer])
+
   return (
-    <Accordion type="single" collapsible className="space-y-3">
-      {items.map((item, index) => (
-        <AccordionItem
-          key={index}
-          value={`${prefix}-${index}`}
-          className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden"
-        >
-          <AccordionTrigger
-            className="px-5 py-4 md:px-6 text-left text-sm md:text-base text-[#5d5a5a] hover:no-underline"
-            style={{ ["--accent" as string]: accentColor }}
-          >
-            {item.question}
-          </AccordionTrigger>
-          <AccordionContent className="px-5 pb-4 md:px-6 text-[#5d5a5a]/70 leading-relaxed text-sm md:text-base">
-            {item.answer}
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+    <div
+      className={`bg-white rounded-2xl border-0 border-l-4 ${borderClass} shadow-sm hover:shadow-md transition-shadow overflow-hidden`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-start justify-between gap-4 px-5 py-4 md:px-6 md:py-5 text-left text-sm md:text-base font-medium text-[#5d5a5a] cursor-pointer"
+        aria-expanded={isOpen}
+      >
+        {question}
+        <ChevronDown
+          className={`text-[#5d5a5a]/40 size-4 shrink-0 translate-y-0.5 transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      <div
+        ref={contentRef}
+        className="overflow-hidden transition-[max-height] duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? `${height}px` : "0px" }}
+        role="region"
+      >
+        <div className="px-5 pb-5 md:px-6 md:pb-6 text-[#5d5a5a]/75 leading-relaxed text-sm md:text-base whitespace-pre-line">
+          {answer}
+        </div>
+      </div>
+    </div>
   )
 }
 
-export default function FAQSection() {
-  const [activeTab, setActiveTab] = useState<"individual" | "group" | "anxiety">("individual")
+function FAQAccordion({
+  items,
+  borderClass,
+  prefix,
+}: {
+  items: FaqItem[]
+  borderClass: string
+  prefix: string
+}) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  const handleToggle = useCallback((index: number) => {
+    setOpenIndex(prev => (prev === index ? null : index))
+  }, [])
 
   return (
-    <section className="py-14 md:py-20 lg:py-32">
+    <div className="space-y-4">
+      {items.map((item, index) => (
+        <AccordionItem
+          key={`${prefix}-${item._id ?? index}`}
+          question={normalizeGroupProgramText(item.question) ?? item.question}
+          answer={normalizeGroupProgramText(item.answer) ?? item.answer}
+          isOpen={openIndex === index}
+          onToggle={() => handleToggle(index)}
+          borderClass={borderClass}
+        />
+      ))}
+    </div>
+  )
+}
+
+export default function FAQSection({ faqItems = [], showAll = false, category }: FAQSectionProps) {
+  const [activeTab, setActiveTab] = useState<CategoryKey>(category ?? "individual")
+
+  const limit = (items: FaqItem[]) => showAll || category ? items : items.slice(0, 3)
+  const normalizedItems: FaqItem[] = faqItems.map((item) => ({
+    ...item,
+    category: normalizeCategory(item.category) ?? item.category,
+  }))
+  const grouped = {
+    individual: limit(normalizedItems.filter(i => i.category === "individual")),
+    grupal: limit(normalizedItems.filter(i => i.category === "grupal")),
+    ansiedad: limit(normalizedItems.filter(i => i.category === "ansiedad")),
+  }
+  const activeTabConfig = tabs.find(tab => tab.key === activeTab) ?? tabs[0]
+  const activeItems = grouped[activeTab]
+
+  if (category) {
+    const config = tabs.find(tab => tab.key === category) ?? tabs[0]
+    const items = grouped[category]
+    if (items.length === 0) return null
+
+    return (
+      <section className="py-16 lg:py-24">
+        <div className="container mx-auto px-5">
+          <div className="text-center mb-10 md:mb-12">
+            <span className="inline-block text-xs font-semibold tracking-widest uppercase text-[#9591eb] mb-3">
+              Preguntas frecuentes
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-3">
+              Resuelve tus <span className="text-[#98465d]">dudas</span>
+            </h2>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <FAQAccordion items={items} borderClass={config.borderClass} prefix={category} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="py-14 md:py-20 lg:py-28 bg-gradient-to-b from-[#f0eef5] via-[#f6f3f5] to-[#f5eff2]">
       <div className="container mx-auto px-5">
-        <div className="text-center mb-10 md:mb-16">
-          <span className="inline-block text-[#98465d] font-medium mb-4 tracking-wide uppercase text-sm">Preguntas Frecuentes</span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
-            Preguntas que podrias{" "}
-            <span className="text-[#9591eb]">tener</span>
+        <div className="text-center mb-10 md:mb-14">
+          <span className="inline-block text-xs font-semibold tracking-widest uppercase text-[#9591eb] mb-3">
+            Preguntas frecuentes
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl text-[#5d5a5a] mb-3">
+            Resuelve tus <span className="text-[#98465d]">dudas</span>
           </h2>
-          <p className="text-base md:text-lg text-[#5d5a5a]/70 max-w-2xl mx-auto">
-            No encuentras lo que buscas? No dudes en contactarme—siempre estoy feliz de conversar.
+          <p className="text-[#5d5a5a]/60 max-w-lg mx-auto">
+            Todo lo que necesitas saber antes de dar el primer paso
           </p>
         </div>
 
-        {/* Mobile: tabbed navigation */}
-        <div className="lg:hidden max-w-xl mx-auto">
-          <div className="flex rounded-2xl bg-[#f6f3f5] p-1 mb-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex rounded-2xl bg-white/80 p-1.5 mb-8 shadow-sm border border-[#cfcdff]/30">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`flex-1 py-2.5 px-3 rounded-xl text-sm md:text-base font-medium transition-all duration-300 cursor-pointer ${
                   activeTab === tab.key
                     ? "bg-white text-[#5d5a5a] shadow-sm"
-                    : "text-[#5d5a5a]/50"
+                    : "text-[#5d5a5a]/55 hover:text-[#5d5a5a]"
                 }`}
+                aria-pressed={activeTab === tab.key}
               >
                 {tab.label}
               </button>
             ))}
           </div>
 
-          <div className="space-y-4">
-            {activeTab === "individual" && (
-              <FAQAccordion items={faqData.individual} accentColor="#98465d" prefix="m-individual" />
-            )}
-            {activeTab === "group" && (
-              <FAQAccordion items={faqData.group} accentColor="#9591eb" prefix="m-group" />
-            )}
-            {activeTab === "anxiety" && (
-              <FAQAccordion items={faqData.anxiety} accentColor="#5d5a5a" prefix="m-anxiety" />
-            )}
-          </div>
-        </div>
-
-        {/* Desktop: 3-column grid */}
-        <div className="hidden lg:grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#98465d]/10 rounded-xl flex items-center justify-center">
-                <span className="text-[#98465d] font-bold">1</span>
-              </div>
-              <h3 className="text-lg font-semibold text-[#5d5a5a]">Terapia Individual</h3>
-            </div>
-            <FAQAccordion items={faqData.individual} accentColor="#98465d" prefix="individual" />
+          <div className="mb-5 flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full" style={{ backgroundColor: activeTabConfig.accent }} />
+            <h3 className="text-xl md:text-2xl font-semibold text-[#5d5a5a]">
+              {activeTab === "individual" && "Sesiones individuales"}
+              {activeTab === "grupal" && GROUP_PROGRAM.navLabel}
+              {activeTab === "ansiedad" && "Ansiedad"}
+            </h3>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#9591eb]/10 rounded-xl flex items-center justify-center">
-                <span className="text-[#9591eb] font-bold">2</span>
-              </div>
-              <h3 className="text-lg font-semibold text-[#5d5a5a]">Sesiones Grupales</h3>
-            </div>
-            <FAQAccordion items={faqData.group} accentColor="#9591eb" prefix="group" />
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#cfcdff]/50 rounded-xl flex items-center justify-center">
-                <span className="text-[#5d5a5a] font-bold">3</span>
-              </div>
-              <h3 className="text-lg font-semibold text-[#5d5a5a]">Preguntas sobre Ansiedad</h3>
-            </div>
-            <FAQAccordion items={faqData.anxiety} accentColor="#5d5a5a" prefix="anxiety" />
-          </div>
+          <FAQAccordion
+            items={activeItems}
+            borderClass={activeTabConfig.borderClass}
+            prefix={activeTab}
+          />
         </div>
       </div>
     </section>

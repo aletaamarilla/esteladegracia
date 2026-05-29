@@ -1,0 +1,5 @@
+export { testimonial } from './testimonial'
+export { faqItem } from './faqItem'
+export { service } from './service'
+export { blogPost } from './blogPost'
+export { resource } from './resource'

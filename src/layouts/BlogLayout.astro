@@ -1,14 +1,20 @@
 ---
-import PageLayout from './PageLayout.astro';
+import PageLayout from './PageLayout.astro'
+import BlogCard from '@/components/shared/BlogCard.astro'
+import type { BlogPostPreview } from '@/lib/sanityTypes'
 
 interface Props {
-  title: string;
-  description: string;
-  publishedDate: Date;
-  updatedDate?: Date;
-  category: string;
-  readingTime?: number;
-  author?: string;
+  title: string
+  description: string
+  publishedDate: string
+  updatedDate?: string
+  category?: string
+  readingTime?: number
+  author?: string
+  bodyHtml?: string
+  relatedPosts?: BlogPostPreview[]
+  whatsappUrl?: string
+  postSlug?: string
 }
 
 const {
@@ -19,24 +25,29 @@ const {
   category,
   readingTime,
   author = 'Estela de Gracia',
-} = Astro.props;
+  bodyHtml,
+  relatedPosts,
+  whatsappUrl,
+  postSlug,
+} = Astro.props
 
 const categoryColors: Record<string, string> = {
   ansiedad: 'bg-[#98465d]/10 text-[#98465d]',
-  autoestima: 'bg-[#9591eb]/10 text-[#9591eb]',
+  autoconocimiento: 'bg-[#9591eb]/10 text-[#9591eb]',
   relaciones: 'bg-[#cfcdff] text-[#5d5a5a]',
   herramientas: 'bg-green-100 text-green-700',
-  psicoeducacion: 'bg-amber-100 text-amber-700',
-};
+}
 
-const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
+const colorClass = category ? (categoryColors[category] ?? 'bg-[#f6f3f5] text-[#5d5a5a]') : 'bg-[#f6f3f5] text-[#5d5a5a]'
+
+const formatDate = (dateStr: string) =>
+  new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 ---
 
 <PageLayout title={title} description={description}>
   <div class="section-flow" style="--section-bg: #f5eff1; --next-bg: #f6f3f5">
   <article class="py-16 lg:py-24">
     <div class="container mx-auto px-5">
-      <!-- Breadcrumbs -->
       <nav class="mb-8 max-w-3xl mx-auto" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2 text-sm text-[#5d5a5a]/60">
           <li><a href="/" class="hover:text-[#98465d] transition-colors">Inicio</a></li>
@@ -47,11 +58,12 @@ const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
         </ol>
       </nav>
 
-      <!-- Header -->
       <header class="max-w-3xl mx-auto mb-12 text-center">
-        <span class={`inline-block text-xs font-medium px-3 py-1 rounded-full ${colorClass} mb-4`}>
-          {category}
-        </span>
+        {category && (
+          <span class={`inline-block text-xs font-medium px-3 py-1 rounded-full ${colorClass} mb-4`}>
+            {category}
+          </span>
+        )}
         <h1 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-6 text-balance">
           {title}
         </h1>
@@ -61,8 +73,8 @@ const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
         <div class="flex items-center justify-center gap-4 text-sm text-[#5d5a5a]/50">
           <span>{author}</span>
           <span class="w-1 h-1 rounded-full bg-[#cfcdff]"></span>
-          <time datetime={publishedDate.toISOString()}>
-            {publishedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+          <time datetime={publishedDate}>
+            {formatDate(publishedDate)}
           </time>
           {readingTime && (
             <>
@@ -73,49 +85,79 @@ const colorClass = categoryColors[category] || 'bg-[#f6f3f5] text-[#5d5a5a]';
         </div>
         {updatedDate && (
           <p class="text-xs text-[#5d5a5a]/40 mt-2">
-            Actualizado: {updatedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+            Actualizado: {formatDate(updatedDate)}
           </p>
         )}
       </header>
 
-      <!-- Content -->
-      <div class="max-w-3xl mx-auto prose prose-lg
-        prose-headings:font-display prose-headings:text-[#5d5a5a] prose-headings:font-semibold
-        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
-        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-        prose-p:text-[#5d5a5a]/80 prose-p:leading-relaxed
-        prose-li:text-[#5d5a5a]/80
-        prose-strong:text-[#5d5a5a] prose-strong:font-semibold
-        prose-a:text-[#98465d] prose-a:underline-offset-2 hover:prose-a:text-[#98465d]/80
-        prose-blockquote:border-l-[#9591eb] prose-blockquote:text-[#5d5a5a]/70 prose-blockquote:italic
-        prose-hr:border-[#f6f3f5]
-      ">
-        <slot />
+      <div class="blog-body max-w-3xl mx-auto">
+        {bodyHtml ? <Fragment set:html={bodyHtml} /> : <slot />}
       </div>
 
-      <!-- Author card -->
-      <div class="max-w-3xl mx-auto mt-16 pt-8 border-t border-[#f6f3f5]">
-        <div class="flex items-start gap-4">
-          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#98465d]/20 to-[#9591eb]/20 flex items-center justify-center shrink-0">
-            <span class="text-2xl font-display text-[#98465d]">E</span>
-          </div>
-          <div>
-            <h3 class="font-display text-lg text-[#5d5a5a] mb-1">Estela de Gracia</h3>
-            <p class="text-sm text-[#5d5a5a]/60 mb-3">
-              Psicologa sanitaria especializada en ansiedad, trauma y autoestima. 12+ anos de experiencia.
-            </p>
-            <a
-              href="/contacto"
-              class="inline-flex items-center gap-2 text-sm text-[#98465d] font-medium hover:underline"
-            >
-              Reservar sesion
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
+      <div class="max-w-3xl mx-auto mt-16">
+        <div class="bg-gradient-to-br from-[#98465d]/5 to-[#9591eb]/5 rounded-3xl p-8 md:p-12">
+          <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#98465d]/30 to-[#9591eb]/30 flex items-center justify-center shrink-0 ring-4 ring-white/60">
+              <span class="text-3xl font-display text-[#98465d]">E</span>
+            </div>
+
+            <div class="flex-1 text-center md:text-left">
+              <h3 class="font-display text-xl md:text-2xl text-[#5d5a5a] mb-1">Estela de Gracia</h3>
+              <p class="text-sm text-[#98465d]/70 font-medium mb-4">Psicóloga sanitaria</p>
+              <p class="text-[#5d5a5a]/70 leading-relaxed mb-6 italic">
+                "Si este artículo resonó contigo, no tienes que pasar por esto solx."
+              </p>
+
+              <div class="flex flex-col sm:flex-row items-center gap-3 mb-5">
+                {whatsappUrl && (
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 bg-[#25D366] text-white font-medium px-6 py-3 rounded-full hover:bg-[#1fba59] transition-colors focus:outline-none focus:ring-2 focus:ring-[#25D366]/50 focus:ring-offset-2 w-full sm:w-auto justify-center"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Escríbeme por WhatsApp
+                  </a>
+                )}
+                <a
+                  href={`/contacto?utm_source=blog&utm_medium=cta&utm_content=${postSlug ?? ''}`}
+                  class="inline-flex items-center gap-2 bg-[#98465d] text-white font-medium px-6 py-3 rounded-full hover:bg-[#7d3a4d] transition-colors focus:outline-none focus:ring-2 focus:ring-[#98465d]/50 focus:ring-offset-2 w-full sm:w-auto justify-center"
+                >
+                  Reservar cita
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+              </div>
+
+              <div class="flex items-center justify-center md:justify-start gap-2 text-sm text-[#5d5a5a]/50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Respondo en menos de 24h · Primera sesión de evaluación disponible</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Back to blog -->
+      {relatedPosts && relatedPosts.length > 0 && (
+        <section class="max-w-5xl mx-auto mt-16">
+          <h2 class="font-display text-2xl md:text-3xl text-[#5d5a5a] mb-2">Sigue leyendo</h2>
+          <p class="text-[#5d5a5a]/60 mb-8">Artículos que también pueden ayudarte</p>
+          <div class="grid md:grid-cols-3 gap-6">
+            {relatedPosts.map(post => (
+              <BlogCard
+                title={post.title}
+                description={post.description}
+                href={`/blog/${post.slug.current}`}
+                date={post.publishedDate}
+                category={post.category}
+                readingTime={post.readingTime}
+                coverImage={post.coverImage}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <div class="max-w-3xl mx-auto mt-12 text-center">
         <a
           href="/blog"

@@ -1,0 +1,49 @@
+---
+import VideoModal from '@/components/islands/VideoModal'
+
+interface Props {
+  presentationVideoUrl?: string
+  videoLabel?: string
+  posterUrl?: string
+  posterSrcSet?: string
+}
+
+const {
+  presentationVideoUrl,
+  videoLabel = 'Conóceme en 1 minuto',
+  posterUrl,
+  posterSrcSet,
+} = Astro.props
+---
+
+{presentationVideoUrl && (
+  <section class="relative pt-0 pb-14 md:pb-20 bg-[#efedf6]">
+    {/* Degradado que funde el fondo del hero con esta sección */}
+    <div
+      class="absolute inset-x-0 top-0 h-20 pointer-events-none"
+      style="background: linear-gradient(to bottom, #f5eff2 0%, #efedf6 100%);"
+      aria-hidden="true"
+    />
+
+    <div class="relative container mx-auto px-5 max-w-4xl pt-6 md:pt-8">
+      <div class="text-center mb-5">
+        <span class="text-[#9591eb] font-medium text-sm tracking-wide uppercase">
+          Presentación
+        </span>
+      </div>
+
+      <VideoModal
+        client:visible
+        videoUrl={presentationVideoUrl}
+        triggerLabel={videoLabel}
+        variant="showcase"
+        posterUrl={posterUrl}
+        posterSrcSet={posterSrcSet}
+      />
+
+      <p class="text-center mt-4 text-sm text-[#5d5a5a]/60 font-serif">
+        {videoLabel}
+      </p>
+    </div>
+  </section>
+)}

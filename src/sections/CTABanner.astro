@@ -2,49 +2,147 @@
 interface Props {
   title: string;
   highlight?: string;
-  highlightColor?: 'rose' | 'purple'; // kept for backwards compat
+  highlightColor?: 'rose' | 'purple';
   description?: string;
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+  backgroundImageUrl?: string;
+  backgroundImageSrcSet?: string;
+  backgroundImagePosition?: string;
 }
 
 const {
   title,
   highlight,
   description,
-  primaryCta,
+  primaryCta = { label: 'Reservar cita', href: '/contacto' },
   secondaryCta,
+  backgroundImageUrl,
+  backgroundImageSrcSet,
+  backgroundImagePosition = 'center',
 } = Astro.props;
+
+const hasImage = !!backgroundImageUrl;
 ---
 
-<section class="py-14 md:py-20 lg:py-28 relative">
-  <div class="container mx-auto px-5 text-center">
-    <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
-      {title}{' '}
-      {highlight && <span class="text-[#98465d]">{highlight}</span>}
-    </h2>
+{hasImage ? (
+  <section class="relative overflow-hidden bg-[var(--soft-bg)]">
+    {/* Gradiente cálido solo desktop */}
+    <div
+      class="pointer-events-none absolute inset-0 hidden sm:block"
+      aria-hidden="true"
+      style="background: linear-gradient(145deg, #f5eff1 0%, #efedf6 50%, #f0eef5 100%);"
+    />
+    <div class="relative flex flex-col sm:flex-row">
+      <div class="order-2 flex flex-col justify-center sm:order-1 sm:w-[45%] px-6 py-14 sm:px-8 sm:py-20 lg:py-24 lg:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] lg:pr-14">
+        <div class="max-w-lg mx-auto sm:mx-0">
+          <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
+            {title}{' '}
+            {highlight && <span class="text-[#98465d]">{highlight}</span>}
+          </h2>
 
-    {description && (
-      <p class="text-lg text-[#5d5a5a]/70 max-w-xl mx-auto mb-10">
-        {description}
-      </p>
-    )}
+          {description && (
+            <p class="text-lg text-[#5d5a5a]/70 max-w-xl mb-8 md:mb-10">
+              {description}
+            </p>
+          )}
 
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a
-        href={primaryCta.href}
-        class="hover-shimmer inline-flex items-center justify-center bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-full px-8 py-4 text-lg font-medium transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#98465d]/25"
-      >
-        {primaryCta.label}
-      </a>
-      {secondaryCta && (
-        <a
-          href={secondaryCta.href}
-          class="inline-flex items-center justify-center border-2 border-[#9591eb] text-[#9591eb] hover:bg-[#9591eb] hover:text-white rounded-full px-8 py-4 text-lg font-medium transition-all bg-transparent"
-        >
-          {secondaryCta.label}
-        </a>
-      )}
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href={primaryCta.href}
+              class="hover-shimmer inline-flex items-center justify-center whitespace-nowrap bg-[#98465d] hover:bg-[#8a3d53] text-white rounded-xl px-8 py-3.5 text-base font-medium transition-all duration-300 hover:shadow-[0_6px_28px_-4px_rgba(152,70,93,0.45)]"
+            >
+              {primaryCta.label}
+            </a>
+            {secondaryCta && (
+              <a
+                href={secondaryCta.href}
+                class="inline-flex items-center justify-center whitespace-nowrap border-2 border-[#98465d]/30 text-[#98465d] hover:bg-[#98465d] hover:border-[#98465d] hover:text-white rounded-xl px-8 py-3.5 text-base font-medium transition-all duration-300 bg-transparent"
+              >
+                {secondaryCta.label}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div class="order-1 sm:order-2 sm:w-[55%]">
+        <div class="relative aspect-[4/5] max-h-[80vh] w-full overflow-hidden">
+          <img
+            src={backgroundImageUrl}
+            srcset={backgroundImageSrcSet}
+            sizes="(max-width: 639px) 100vw, 55vw"
+            alt=""
+            role="presentation"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            class="absolute inset-0 w-full h-full object-cover"
+            style={`object-position: ${backgroundImagePosition}`}
+          />
+          <div
+            class="pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-24 sm:block md:w-32 lg:w-40"
+            style="background: linear-gradient(to right, #efedf6 0%, rgba(239,237,246,0.85) 35%, rgba(239,237,246,0.4) 65%, transparent 100%);"
+            aria-hidden="true"
+          />
+          {/* Degradado inferior mobile: funde con color de marca */}
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-20 sm:hidden"
+            style="background: linear-gradient(to top, var(--soft-bg) 0%, rgba(246,243,245,0.75) 40%, transparent 100%);"
+            aria-hidden="true"
+          />
+          {/* Degradado inferior desktop */}
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] hidden sm:block sm:h-16"
+            style="background: linear-gradient(to top, #f0eef5 0%, rgba(240,238,245,0.75) 40%, transparent 100%);"
+            aria-hidden="true"
+          />
+          {/* Degradado superior mobile: funde con color de marca */}
+          <div
+            class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 sm:hidden"
+            style="background: linear-gradient(to bottom, rgba(246,243,245,0.7) 0%, transparent 100%);"
+            aria-hidden="true"
+          />
+          {/* Degradado superior desktop */}
+          <div
+            class="pointer-events-none absolute inset-x-0 top-0 z-[1] hidden sm:block sm:h-12"
+            style="background: linear-gradient(to bottom, rgba(239,237,246,0.7) 0%, transparent 100%);"
+            aria-hidden="true"
+          />
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+) : (
+  <section class="py-14 md:py-20 lg:py-28 relative overflow-hidden">
+    <div class="container mx-auto px-5 text-center">
+      <h2 class="font-display text-3xl md:text-4xl lg:text-5xl text-[#5d5a5a] mb-4 md:mb-6 text-balance">
+        {title}{' '}
+        {highlight && <span class="text-[#98465d]">{highlight}</span>}
+      </h2>
+
+      {description && (
+        <p class="text-lg text-[#5d5a5a]/70 max-w-xl mx-auto mb-10">
+          {description}
+        </p>
+      )}
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={primaryCta.href}
+          class="hover-shimmer inline-flex items-center justify-center whitespace-nowrap bg-[#98465d] hover:bg-[#8a3d53] text-white rounded-xl px-8 py-3.5 text-base font-medium transition-all duration-300 hover:shadow-[0_6px_28px_-4px_rgba(152,70,93,0.45)]"
+        >
+          {primaryCta.label}
+        </a>
+        {secondaryCta && (
+          <a
+            href={secondaryCta.href}
+            class="inline-flex items-center justify-center whitespace-nowrap border-2 border-[#98465d]/30 text-[#98465d] hover:bg-[#98465d] hover:border-[#98465d] hover:text-white rounded-xl px-8 py-3.5 text-base font-medium transition-all duration-300 bg-transparent"
+          >
+            {secondaryCta.label}
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+)}

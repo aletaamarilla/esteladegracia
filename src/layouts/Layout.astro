@@ -1,15 +1,30 @@
 ---
-import '@/styles/globals.css';
+import '@/styles/globals.css'
+import SEOHead from '@/components/shared/SEOHead.astro'
+import { sanityFetch } from '@/lib/sanity'
+import { siteSettingsQuery } from '@/lib/queries'
+import type { SiteSettings } from '@/lib/sanityTypes'
+import { urlFor } from '@/lib/sanityImage'
 
 interface Props {
-  title?: string;
-  description?: string;
+  title?: string
+  description?: string
+  personImageUrl?: string
+  heroImagePreload?: { url: string; srcset?: string }
 }
 
+const settings = await sanityFetch<SiteSettings>(siteSettingsQuery)
+
 const {
-  title = 'Estela de Gracia | Psicologia Sin Distancia',
-  description = 'Psicologia autentica, cercana y real. Terapia individual y grupal para ansiedad, trauma y autoestima. Comienza tu viaje hacia el bienestar hoy.',
-} = Astro.props;
+  title = settings?.brandName
+    ? `${settings.brandName} | ${settings.tagline ?? 'Psicología sin distancia'}`
+    : 'Estela de Gracia | Psicología sin distancia',
+  description,
+  personImageUrl,
+  heroImagePreload,
+} = Astro.props
+
+const cmsFaviconUrl = settings?.favicon ? urlFor(settings.favicon).width(64).height(64).fit('crop').url() : undefined
 ---
 
 <!doctype html>
@@ -17,24 +32,57 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Favicons -->
-    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/icon-light-32x32.png" media="(prefers-color-scheme: light)" />
-    <link rel="icon" href="/icon-dark-32x32.png" media="(prefers-color-scheme: dark)" />
-    <link rel="apple-touch-icon" href="/apple-icon.png" />
+    <SEOHead title={title} description={description} />
 
-    <!-- Google Fonts -->
+    <!-- Favicons -->
+    <link rel="icon" href={cmsFaviconUrl ?? '/favicon.ico?v=4'} sizes="any" />
+    {!cmsFaviconUrl && <link rel="icon" href="/favicon-estela.png?v=4" type="image/png" sizes="512x512" />}
+    {!cmsFaviconUrl && <link rel="icon" href="/favicon-32x32.png?v=4" type="image/png" sizes="32x32" />}
+    {!cmsFaviconUrl && <link rel="icon" href="/favicon-16x16.png?v=4" type="image/png" sizes="16x16" />}
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=4" />
+
+    <!-- Hero image preload -->
+    {heroImagePreload && (
+      <link
+        rel="preload"
+        as="image"
+        href={heroImagePreload.url}
+        imagesrcset={heroImagePreload.srcset}
+        imagesizes="(max-width: 639px) 100vw, 55vw"
+        fetchpriority="high"
+      />
+    )}
+
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.sanity.io" />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
       rel="stylesheet"
     />
 
-    <title>{title}</title>
+    <!-- JSON-LD WebSite -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": settings?.brandName ?? "Estela de Gracia",
+      "url": Astro.site?.toString() ?? "https://psicologiasindistancia.com",
+      "description": settings?.tagline ?? "Psicología sin distancia",
+    })} />
+
+    <!-- JSON-LD Person (Estela de Gracia) -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": settings?.brandName ?? "Estela de Gracia",
+      "jobTitle": "Psicóloga",
+      "url": Astro.site?.toString() ?? "https://psicologiasindistancia.com",
+      ...(personImageUrl ? { "image": personImageUrl } : {}),
+      ...(settings?.contactInfo?.email ? { "email": settings.contactInfo.email } : {}),
+    })} />
   </head>
   <body class="font-sans antialiased overflow-x-hidden">
     <slot />

@@ -1,18 +1,314 @@
 ---
-import HeroVideoPlayer from '@/components/islands/HeroVideoPlayer';
+import { HugIcon } from '@/components/icons/hug-icon'
+import EmotionalRotator from '@/components/islands/EmotionalRotator.tsx'
+import VideoModal from '@/components/islands/VideoModal'
+
+interface Props {
+  badge?: string
+  headline?: string
+  headlineHighlight?: string
+  subtitle?: string
+  primaryCta?: { label: string; href: string }
+  secondaryCta?: { label: string; href: string }
+  trustBadge?: string
+  backgroundImageUrl?: string
+  backgroundImageSrcSet?: string
+  backgroundImagePosition?: string
+  backgroundImageAlt?: string
+  rotatingPhrases?: string[]
+  scrollInviteText?: string
+  presentationVideoUrl?: string
+  videoLabel?: string
+  videoPosterUrl?: string
+  videoPosterSrcSet?: string
+}
+
+const {
+  badge = 'Un espacio seguro para ti',
+  headline = 'Psicología sin distancia.',
+  headlineHighlight = 'Auténtica, cercana y real.',
+  subtitle = 'La terapia no tiene que sentirse fría. Aquí encontrarás calidez, comprensión y conexión genuina.',
+  primaryCta = { label: 'Reservar cita', href: '/contacto' },
+  secondaryCta,
+  trustBadge = '500+ vidas transformadas',
+  backgroundImageUrl,
+  backgroundImageSrcSet,
+  backgroundImagePosition = 'center 15%',
+  backgroundImageAlt,
+  rotatingPhrases,
+  scrollInviteText = 'Conóceme',
+  presentationVideoUrl,
+  videoLabel = 'Conóceme en 1 minuto',
+  videoPosterUrl,
+  videoPosterSrcSet,
+} = Astro.props
+
+const hasRotatingPhrases = rotatingPhrases && rotatingPhrases.length > 0
+const hasVideo = !!presentationVideoUrl
+
+const hasImage = !!backgroundImageUrl
+const imageIsDecorative = !backgroundImageAlt?.trim()
+const imgAlt = imageIsDecorative ? '' : backgroundImageAlt!.trim()
+
+const trustBadgeParts = trustBadge
+  ? { bold: trustBadge.split(' ')[0], rest: trustBadge.split(' ').slice(1).join(' ') }
+  : null
+
+const showSecondaryCta = !!(secondaryCta?.label?.trim() && secondaryCta?.href?.trim())
+
+const heroImgSizes = '(max-width: 639px) 100vw, 55vw'
 ---
 
-<section class="relative min-h-[100svh] overflow-hidden bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/20 to-[#f6f3f5] pt-20">
-  <!-- Organic background shapes -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute -top-20 -left-20 w-80 h-80 bg-[#cfcdff]/30 rounded-full blur-3xl animate-pulse"></div>
-    <div class="absolute top-1/3 -right-20 w-96 h-96 bg-[#98465d]/10 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-1/4 w-72 h-72 bg-[#9591eb]/20 rounded-full blur-3xl"></div>
+<section class="relative overflow-hidden bg-[var(--soft-bg)] sm:bg-[#f5eff2]">
+  {/* Gradiente cálido de fondo — solo desktop donde imagen y texto van lado a lado */}
+  <div
+    class="hero-warm-gradient pointer-events-none absolute inset-0 z-[0] hidden sm:block"
+    aria-hidden="true"
+    style="background: linear-gradient(145deg, #f7f0f0 0%, #f5eee8 30%, #f3ece4 50%, #f0e8e0 70%, #efedf6 100%); background-size: 200% 200%; animation: warmShift 60s ease-in-out infinite;"
+  >
   </div>
 
-  <div class="relative container mx-auto px-5 h-[calc(100svh-5rem)] flex flex-col">
-    <HeroVideoPlayer client:load />
+  {/* Resplandor cálido sutil detrás de la zona de texto — solo desktop */}
+  <div
+    class="hero-breathe pointer-events-none absolute inset-0 z-[1] hidden sm:block"
+    aria-hidden="true"
+    style="background-image: radial-gradient(ellipse 60% 70% at 22% 50%, rgba(210, 170, 145, 0.15) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 75% 40%, rgba(152, 70, 93, 0.04) 0%, transparent 50%); animation: breathe 4s ease-in-out infinite;"
+  >
   </div>
 
-  <div class="absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-b from-transparent to-[#efedf6] pointer-events-none"></div>
+  {/* Orbes de luz bokeh */}
+  <div
+    class="hero-orb pointer-events-none absolute z-[2] rounded-full"
+    aria-hidden="true"
+    style="width: 180px; height: 180px; top: 15%; left: 10%; filter: blur(40px); background: radial-gradient(circle, rgba(210, 170, 145, 0.18) 0%, transparent 70%); animation: orbFloat 18s ease-in-out infinite; will-change: transform; contain: layout;"
+  />
+  <div
+    class="hero-orb pointer-events-none absolute z-[2] rounded-full"
+    aria-hidden="true"
+    style="width: 140px; height: 140px; top: 55%; right: 20%; filter: blur(40px); background: radial-gradient(circle, rgba(152, 70, 93, 0.1) 0%, transparent 70%); animation: orbFloat 22s ease-in-out infinite; animation-delay: -6s; will-change: transform; contain: layout;"
+  />
+  <div
+    class="hero-orb pointer-events-none absolute z-[2] rounded-full hidden sm:block"
+    aria-hidden="true"
+    style="width: 120px; height: 120px; bottom: 20%; left: 35%; filter: blur(40px); background: radial-gradient(circle, rgba(149, 145, 235, 0.1) 0%, transparent 70%); animation: orbFloat 26s ease-in-out infinite; animation-delay: -12s; will-change: transform; contain: layout;"
+  />
+
+  <div class="relative z-10 w-full">
+    {
+      hasImage ? (
+        <div class="flex flex-col sm:flex-row sm:items-stretch">
+          {/* ── Columna de texto ── */}
+          <div class="order-2 flex flex-col justify-center px-6 pb-10 pt-6 sm:order-1 sm:w-[45%] sm:px-8 sm:pt-28 sm:pb-20 md:pt-32 md:pb-24 lg:pt-36 lg:pb-32 lg:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] lg:pr-14 xl:pr-20">
+            <div class="mx-auto w-full max-w-md space-y-5 text-center sm:mx-0 sm:space-y-6 sm:text-left lg:max-w-lg">
+              {/* Badge */}
+              <div class="hero-animate-1 inline-flex items-center gap-2.5 rounded-full bg-white/50 px-4 py-2 shadow-sm backdrop-blur-sm">
+                <HugIcon className="h-4 w-4 shrink-0" fill="#98465d" />
+                <span class="text-[11px] font-medium uppercase tracking-[0.1em] text-[#7a6b6b] md:text-xs">{badge}</span>
+              </div>
+
+              {/* Headline */}
+              <div class="hero-animate-2 space-y-3">
+                <h1 class="font-display text-balance text-[1.7rem] leading-[1.18] text-[#3a3535] sm:text-[1.55rem] md:text-[1.9rem] lg:text-[2.35rem] xl:text-[2.6rem]">
+                  {headline}
+                </h1>
+                {headlineHighlight && (
+                  <p class="font-serif text-base italic leading-relaxed text-[#98465d]/90 md:text-lg lg:text-xl">
+                    {headlineHighlight}
+                  </p>
+                )}
+              </div>
+
+              {/* Emotional Rotator */}
+              {hasRotatingPhrases && (
+                <div class="hero-animate-3">
+                  <EmotionalRotator client:visible phrases={rotatingPhrases!} />
+                </div>
+              )}
+
+              {/* Subtítulo */}
+              <p class={`${hasRotatingPhrases ? 'hero-animate-4' : 'hero-animate-3'} font-serif text-[0.9375rem] leading-[1.75] text-[#5d5555] md:text-base`}>
+                {subtitle}
+              </p>
+
+              {/* CTAs */}
+              <div class={`${hasRotatingPhrases ? 'hero-animate-5' : 'hero-animate-4'} flex flex-col items-center gap-3 pt-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5`}>
+                <a
+                  href={primaryCta.href}
+                  class="hover-shimmer inline-flex items-center rounded-full bg-[#98465d] px-7 py-3 text-sm font-medium text-white shadow-[0_4px_20px_-4px_rgba(152,70,93,0.35)] transition-all duration-300 hover:bg-[#8a3d53] hover:shadow-[0_6px_28px_-4px_rgba(152,70,93,0.45)] md:px-8 md:py-3.5 md:text-[0.9375rem]"
+                >
+                  {primaryCta.label}
+                </a>
+                {showSecondaryCta && (
+                  <a
+                    href={secondaryCta!.href}
+                    class="text-sm text-[#6b5e5e] underline decoration-[#98465d]/25 underline-offset-4 transition-colors hover:text-[#98465d] hover:decoration-[#98465d]/50"
+                  >
+                    {secondaryCta!.label}
+                  </a>
+                )}
+              </div>
+
+              {/* Video thumbnail — mobile only (desktop uses the absolute overlay) */}
+              {hasVideo && presentationVideoUrl && (
+                <div class={`${hasRotatingPhrases ? 'hero-animate-6' : 'hero-animate-5'} sm:hidden`}>
+                  <VideoModal
+                    client:visible
+                    videoUrl={presentationVideoUrl}
+                    triggerLabel={videoLabel}
+                    variant="thumbnail"
+                    posterUrl={videoPosterUrl}
+                    posterSrcSet={videoPosterSrcSet}
+                  />
+                </div>
+              )}
+
+              {/* Trust */}
+              {trustBadgeParts && (
+                <div class={`${hasRotatingPhrases ? (hasVideo ? 'hero-animate-7' : 'hero-animate-6') : (hasVideo ? 'hero-animate-6' : 'hero-animate-5')} flex items-center justify-center gap-2 pt-1 sm:justify-start`}>
+                  <div class="h-px w-6 bg-[#98465d]/20" aria-hidden="true" />
+                  <p class="text-xs leading-relaxed text-[#7a6b6b] md:text-[13px]">
+                    <span class="font-semibold text-[#98465d]/90">{trustBadgeParts.bold}</span>{' '}
+                    {trustBadgeParts.rest}
+                  </p>
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          {/* ── Columna de imagen ── */}
+          <div class="hero-image-animate order-1 sm:order-2 sm:w-[55%]">
+            <div class="relative h-[56svh] max-h-[400px] w-full overflow-hidden sm:h-full sm:max-h-none sm:min-h-[700px] md:min-h-[780px] lg:min-h-[850px]">
+              <img
+                src={backgroundImageUrl}
+                srcset={backgroundImageSrcSet}
+                sizes={heroImgSizes}
+                alt={imgAlt}
+                class="hero-ken-burns absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                style={`object-position: ${backgroundImagePosition}; animation: kenBurns 12s ease-in-out infinite; will-change: transform;`}
+                aria-hidden={imageIsDecorative ? true : undefined}
+              />
+              {/* Degradado lateral: funde foto con el fondo cálido del texto */}
+              <div
+                class="pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-32 sm:block md:w-40 lg:w-52"
+                style="background: linear-gradient(to right, #f3ece4 0%, rgba(243,236,228,0.85) 35%, rgba(243,236,228,0.4) 65%, transparent 100%);"
+                aria-hidden="true"
+              />
+              {/* Degradado inferior mobile: funde foto con el color de marca */}
+              <div
+                class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 sm:hidden"
+                style="background: linear-gradient(to top, var(--soft-bg) 0%, rgba(246,243,245,0.75) 40%, rgba(246,243,245,0.3) 70%, transparent 100%);"
+                aria-hidden="true"
+              />
+              {/* Degradado inferior desktop: funde foto con el fondo cálido */}
+              <div
+                class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] hidden sm:block sm:h-28 md:h-36"
+                style="background: linear-gradient(to top, #efedf6 0%, rgba(239,237,246,0.75) 40%, rgba(239,237,246,0.3) 70%, transparent 100%);"
+                aria-hidden="true"
+              />
+              {/* Degradado superior mobile: funde con color de marca */}
+              <div
+                class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-20 sm:hidden"
+                style="background: linear-gradient(to bottom, rgba(246,243,245,0.95) 0%, rgba(246,243,245,0.6) 50%, transparent 100%);"
+                aria-hidden="true"
+              />
+              {/* Degradado superior desktop: funde con el fondo cálido */}
+              <div
+                class="pointer-events-none absolute inset-x-0 top-0 z-[1] hidden h-20 sm:block sm:h-24"
+                style="background: linear-gradient(to bottom, rgba(247,240,240,0.95) 0%, rgba(245,238,232,0.6) 50%, transparent 100%);"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* ─── Sin imagen: texto centrado ─── */
+        <div class="mx-auto flex min-h-[52svh] max-w-7xl items-center justify-center px-6 py-20 md:px-8 md:py-24 lg:px-10">
+          <div class="mx-auto max-w-xl space-y-6 text-center lg:max-w-2xl">
+            <div class="inline-flex items-center gap-2.5 rounded-full bg-white/50 px-4 py-2 shadow-sm backdrop-blur-sm hero-animate-1 mx-auto">
+              <HugIcon className="w-4 h-4" fill="#98465d" />
+              <span class="text-xs font-medium text-[#7a6b6b] md:text-sm">{badge}</span>
+            </div>
+
+            <div class="hero-animate-2 space-y-3">
+              <h1 class="font-display text-balance text-[1.75rem] leading-[1.18] text-[#3a3535] sm:text-[2rem] md:text-4xl lg:text-[2.75rem]">
+                {headline}
+              </h1>
+              {headlineHighlight && (
+                <p class="mx-auto max-w-lg font-serif text-base italic leading-snug text-[#98465d]/90 md:text-lg">
+                  {headlineHighlight}
+                </p>
+              )}
+            </div>
+
+            <p class="hero-animate-3 mx-auto max-w-md font-serif text-[0.9375rem] leading-[1.75] text-[#5d5555] md:text-base">
+              {subtitle}
+            </p>
+
+            <div class="hero-animate-4 flex flex-col items-center gap-3">
+              <a
+                href={primaryCta.href}
+                class="hover-shimmer inline-flex items-center justify-center rounded-full bg-[#98465d] px-8 py-3.5 text-base font-medium text-white shadow-[0_4px_20px_-4px_rgba(152,70,93,0.35)] transition-all duration-300 hover:bg-[#8a3d53] hover:shadow-[0_6px_28px_-4px_rgba(152,70,93,0.45)]"
+              >
+                {primaryCta.label}
+              </a>
+              {showSecondaryCta && (
+                <a
+                  href={secondaryCta!.href}
+                  class="text-sm text-[#6b5e5e] underline decoration-[#98465d]/25 underline-offset-4 transition-colors hover:text-[#98465d]"
+                >
+                  {secondaryCta!.label}
+                </a>
+              )}
+            </div>
+
+            {trustBadgeParts && (
+              <p class="hero-animate-5 text-xs text-[#7a6b6b] md:text-sm">
+                <span class="font-semibold text-[#98465d]/90">{trustBadgeParts.bold}</span>{' '}
+                {trustBadgeParts.rest}
+              </p>
+            )}
+          </div>
+        </div>
+      )
+    }
+  </div>
+
+  {hasVideo && presentationVideoUrl ? (
+    <div class="hero-scroll-invite hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+      style="opacity: 0; animation: hero-fade-up 0.6s ease-out 1.5s both;">
+      <VideoModal
+        client:visible
+        videoUrl={presentationVideoUrl}
+        triggerLabel={videoLabel}
+        variant="thumbnail"
+        posterUrl={videoPosterUrl}
+        posterSrcSet={videoPosterSrcSet}
+      />
+    </div>
+  ) : (
+    <div
+      class="hero-scroll-invite hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-[#98465d]/60"
+      aria-hidden="true"
+      style="opacity: 0; animation: scrollInvite 2s ease-in-out infinite; animation-delay: 2s; animation-fill-mode: both;"
+    >
+      <span class="text-xs font-medium tracking-wide">{scrollInviteText}</span>
+      <div class="w-px h-6 bg-[#98465d]/40" />
+    </div>
+  )}
 </section>
+
+<script>
+  const scrollIndicator = document.querySelector('.hero-scroll-invite')
+  if (scrollIndicator) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        (scrollIndicator as HTMLElement).style.opacity = '0'
+        ;(scrollIndicator as HTMLElement).style.transition = 'opacity 0.3s ease'
+      }
+    }, { passive: true })
+  }
+</script>

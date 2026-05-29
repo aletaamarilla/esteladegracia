@@ -2,12 +2,16 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Mail, CheckCircle } from "lucide-react"
+import { submitHubspotForm } from "@/lib/hubspot"
+
+const DEFAULT_FORM_ID = "067523de-e838-4405-87f6-3cdb8873e350"
 
 interface Props {
   buttonText?: string
   successMessage?: string
   description?: string
   source?: string
+  hubspotFormId?: string
 }
 
 export default function NewsletterForm({
@@ -15,14 +19,36 @@ export default function NewsletterForm({
   successMessage = "Te has suscrito correctamente. Revisa tu email.",
   description,
   source: _source,
+  hubspotFormId,
 }: Props) {
   const [email, setEmail] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [consentChecked, setConsentChecked] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email) {
+    if (!email || !consentChecked) return
+
+    setIsSubmitting(true)
+    setError(null)
+
+    const formId = hubspotFormId || DEFAULT_FORM_ID
+
+    try {
+      await submitHubspotForm(formId, [
+        { objectTypeId: "0-1", name: "email", value: email },
+      ])
       setIsSubmitted(true)
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Ha ocurrido un error. Por favor, inténtalo de nuevo."
+      )
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -56,14 +82,31 @@ export default function NewsletterForm({
         </div>
         <Button
           type="submit"
-          className="bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-xl px-6 py-5 font-medium whitespace-nowrap"
+          disabled={isSubmitting || !consentChecked}
+          className={`bg-[#98465d] hover:bg-[#98465d]/90 text-white rounded-xl px-6 py-5 font-medium whitespace-nowrap ${
+            isSubmitting || !consentChecked ? "opacity-60 cursor-not-allowed" : ""
+          }`}
         >
-          {buttonText}
+          {isSubmitting ? "Enviando..." : buttonText}
         </Button>
       </div>
-      <p className="text-xs text-[#5d5a5a]/50 text-center">
-        Sin spam, nunca. Cancela cuando quieras.
-      </p>
+
+      <label className="flex items-start gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={consentChecked}
+          onChange={(e) => setConsentChecked(e.target.checked)}
+          className="mt-0.5 accent-[#9591eb]"
+          required
+        />
+        <span className="text-xs text-[#5d5a5a]/70">
+          Acepto la política de privacidad y el tratamiento de mis datos.
+        </span>
+      </label>
+
+      {error && (
+        <p className="text-xs text-center text-red-500">{error}</p>
+      )}
     </form>
   )
 }

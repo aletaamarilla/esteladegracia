@@ -9,6 +9,11 @@ interface Step {
 export default function ServiceProcess({ steps }: { steps: Step[] }) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const isFourStepProcess = steps.length === 4
+  const gridClassName = isFourStepProcess
+    ? "grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-6"
+    : "grid md:grid-cols-3 gap-8"
+  const connectorClassName = isFourStepProcess ? "hidden lg:block" : "hidden md:block"
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -22,18 +27,18 @@ export default function ServiceProcess({ steps }: { steps: Step[] }) {
   }, [])
 
   return (
-    <div ref={sectionRef} className="grid md:grid-cols-3 gap-8">
+    <div ref={sectionRef} className={gridClassName}>
       {steps.map((step, index) => (
         <div
           key={step.step}
-          className={`relative transition-all duration-700 ${
+          className={`relative mx-auto max-w-xs transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
           style={{ transitionDelay: `${index * 0.2}s` }}
         >
           {/* Connector line (not on last item) */}
           {index < steps.length - 1 && (
-            <div className="hidden md:block absolute top-8 left-[calc(50%+2rem)] right-0 h-px bg-gradient-to-r from-[#cfcdff] to-transparent" />
+            <div className={`${connectorClassName} absolute top-8 left-[calc(50%+2rem)] right-0 h-px bg-gradient-to-r from-[#cfcdff] to-transparent`} />
           )}
 
           <div className="text-center">

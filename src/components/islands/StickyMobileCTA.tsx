@@ -3,7 +3,13 @@ import { X, Mail, MessageCircle } from "lucide-react"
 
 const DISMISSED_KEY = "stickyMobileCTA_dismissed"
 
-export default function StickyMobileCTA() {
+interface StickyMobileCTAProps {
+  whatsappUrl?: string
+}
+
+export default function StickyMobileCTA({
+  whatsappUrl = "https://wa.me/34600000000?text=Hola!%20Me%20gustaria%20agendar%20una%20cita.",
+}: StickyMobileCTAProps) {
   const [visible, setVisible] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
@@ -43,7 +49,7 @@ export default function StickyMobileCTA() {
           </button>
         </a>
         <a
-          href="https://wa.me/34600000000?text=Hola!%20Me%20gustaria%20agendar%20una%20cita."
+          href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="flex-1"

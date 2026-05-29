@@ -1,122 +1,143 @@
 ---
-import { getCollection } from 'astro:content';
-import PageLayout from '@/layouts/PageLayout.astro';
-import PageHero from '@/sections/PageHero.astro';
-import CTABanner from '@/sections/CTABanner.astro';
-import BlogCard from '@/components/shared/BlogCard.astro';
+import PageLayout from '@/layouts/PageLayout.astro'
+import PageHero from '@/sections/PageHero.astro'
+import CTABanner from '@/sections/CTABanner.astro'
+import BlogCard from '@/components/shared/BlogCard.astro'
+import { sanityFetch } from '@/lib/sanity'
+import { blogIndexPageQuery, allBlogPostsQuery } from '@/lib/queries'
+import type { BlogIndexPage, BlogPostPreview } from '@/lib/sanityTypes'
+import { fullBleedHero, hotspotToObjectPosition, portraitImage, portraitSrcSet, srcSet } from '@/lib/sanityImage'
 
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf()
-);
+const [page, posts] = await Promise.all([
+  sanityFetch<BlogIndexPage>(blogIndexPageQuery),
+  sanityFetch<BlogPostPreview[]>(allBlogPostsQuery),
+])
 
-const featuredPost = posts.find((p) => p.data.featured);
-const regularPosts = posts.filter((p) => p !== featuredPost);
+const allPosts = posts ?? []
+const featuredPost = allPosts.find((p) => p.featured)
+const regularPosts = allPosts.filter((p) => p !== featuredPost)
 
-const categories = [
-  { key: 'todos', label: 'Todos' },
-  { key: 'ansiedad', label: 'Ansiedad' },
-  { key: 'autoestima', label: 'Autoestima' },
-  { key: 'relaciones', label: 'Relaciones' },
-  { key: 'herramientas', label: 'Herramientas' },
-  { key: 'psicoeducacion', label: 'Psicoeducación' },
-];
+const categories = page?.categories ?? []
+
+const ctaRaw = page?.ctaBanner ?? {}
+const cta = {
+  title: ctaRaw.title,
+  highlight: ctaRaw.highlight,
+  description: ctaRaw.description,
+  primaryCta: ctaRaw.primaryCta,
+  secondaryCta: ctaRaw.secondaryCta,
+  backgroundImage: ctaRaw.backgroundImage,
+}
+
+const emptyStateText = page?.emptyStateText
+
+const formatDate = (dateStr: string) =>
+  new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 ---
 
-<PageLayout title="Blog" description="Articulos sobre ansiedad, autoestima, relaciones y herramientas de bienestar emocional.">
+<PageLayout
+  title="Blog"
+  description="Articulos sobre ansiedad, autoestima, relaciones y herramientas de bienestar emocional."
+>
   <PageHero
-    label="Blog"
-    title="Articulos para tu"
-    highlight="bienestar emocional"
+    label={page?.heroLabel}
+    title={page?.heroTitle}
+    highlight={page?.heroHighlight}
     highlightColor="rose"
-    description="Reflexiones, herramientas y psicoeducacion para acompanarte en tu proceso."
+    description={page?.heroDescription}
     breadcrumbs={[
       { label: 'Inicio', href: '/' },
       { label: 'Blog' },
     ]}
+    backgroundImageUrl={page?.heroImage ? fullBleedHero(page.heroImage) : undefined}
+    backgroundImageSrcSet={page?.heroImage ? srcSet(page.heroImage) : undefined}
+    backgroundImagePosition={hotspotToObjectPosition(page?.heroImage)}
   />
 
   <div class="section-flow" style="--section-bg: #f0eef5; --next-bg: #f5eff2">
-  <section class="py-16 lg:py-24">
-    <div class="container mx-auto px-5">
-      <!-- Category filters -->
-      <div class="flex flex-wrap gap-2 mb-12 justify-center">
-        {categories.map((cat) => (
-          <button
-            data-category={cat.key}
-            class:list={[
-              'blog-filter px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
-              cat.key === 'todos'
-                ? 'bg-[#98465d] text-white'
-                : 'bg-[#f6f3f5] text-[#5d5a5a] hover:bg-[#98465d]/10 hover:text-[#98465d]',
-            ]}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      <!-- Featured post -->
-      {featuredPost && (
-        <div class="mb-12 blog-card" data-category={featuredPost.data.category}>
-          <a href={`/blog/${featuredPost.slug}`} class="group block">
-            <article class="bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/10 to-white rounded-3xl p-5 md:p-12 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden">
-              <span class="absolute top-6 right-6 bg-[#98465d] text-white text-xs font-medium px-3 py-1 rounded-full">
-                Destacado
-              </span>
-              <div class="max-w-2xl">
-                <span class="inline-block text-xs font-medium px-3 py-1 rounded-full bg-[#98465d]/10 text-[#98465d] mb-4">
-                  {featuredPost.data.category}
-                </span>
-                <h2 class="font-display text-2xl md:text-3xl text-[#5d5a5a] mb-4 group-hover:text-[#98465d] transition-colors">
-                  {featuredPost.data.title}
-                </h2>
-                <p class="text-[#5d5a5a]/70 leading-relaxed mb-6">
-                  {featuredPost.data.description}
-                </p>
-                <div class="flex items-center gap-4 text-sm text-[#5d5a5a]/50">
-                  <time datetime={featuredPost.data.publishedDate.toISOString()}>
-                    {featuredPost.data.publishedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </time>
-                  {featuredPost.data.readingTime && (
-                    <span>{featuredPost.data.readingTime} min lectura</span>
-                  )}
-                </div>
-              </div>
-            </article>
-          </a>
+    <section class="py-16 lg:py-24">
+      <div class="container mx-auto px-5">
+        <div class="flex flex-wrap gap-2 mb-12 justify-center">
+          {categories.map((cat) => (
+            <button
+              data-category={cat.key}
+              class:list={[
+                'blog-filter px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                cat.key === 'todos'
+                  ? 'bg-[#98465d] text-white'
+                  : 'bg-[#f6f3f5] text-[#5d5a5a] hover:bg-[#98465d]/10 hover:text-[#98465d]',
+              ]}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
-      )}
 
-      <!-- Posts grid -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-grid">
-        {regularPosts.map((post) => (
-          <div class="blog-card" data-category={post.data.category}>
-            <BlogCard
-              title={post.data.title}
-              description={post.data.description}
-              href={`/blog/${post.slug}`}
-              date={post.data.publishedDate}
-              category={post.data.category}
-              readingTime={post.data.readingTime}
-            />
+        {featuredPost && (
+          <div class="mb-12 blog-card" data-category={featuredPost.category}>
+            <a href={`/blog/${featuredPost.slug.current}`} class="group block">
+              <article class="bg-gradient-to-br from-[#f6f3f5] via-[#cfcdff]/10 to-white rounded-3xl p-5 md:p-12 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+                <span class="absolute top-6 right-6 bg-[#98465d] text-white text-xs font-medium px-3 py-1 rounded-full">
+                  Destacado
+                </span>
+                <div class="max-w-2xl">
+                  {featuredPost.category && (
+                    <span class="inline-block text-xs font-medium px-3 py-1 rounded-full bg-[#98465d]/10 text-[#98465d] mb-4">
+                      {featuredPost.category}
+                    </span>
+                  )}
+                  <h2 class="font-display text-2xl md:text-3xl text-[#5d5a5a] mb-4 group-hover:text-[#98465d] transition-colors">
+                    {featuredPost.title}
+                  </h2>
+                  <p class="text-[#5d5a5a]/70 leading-relaxed mb-6">
+                    {featuredPost.description}
+                  </p>
+                  <div class="flex items-center gap-4 text-sm text-[#5d5a5a]/50">
+                    <time datetime={featuredPost.publishedDate}>
+                      {formatDate(featuredPost.publishedDate)}
+                    </time>
+                    {featuredPost.readingTime && (
+                      <span>{featuredPost.readingTime} min lectura</span>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </a>
           </div>
-        ))}
-      </div>
+        )}
 
-      <!-- Empty state -->
-      <div id="blog-empty" class="hidden text-center py-16">
-        <p class="text-[#5d5a5a]/50 text-lg">No hay articulos en esta categoria todavia.</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-grid">
+          {regularPosts.map((post) => (
+            <div class="blog-card" data-category={post.category}>
+              <BlogCard
+                title={post.title}
+                description={post.description}
+                href={`/blog/${post.slug.current}`}
+                date={post.publishedDate}
+                category={post.category}
+                readingTime={post.readingTime}
+                coverImage={post.coverImage}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div id="blog-empty" class="hidden text-center py-16">
+          <p class="text-[#5d5a5a]/50 text-lg">{emptyStateText}</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
   </div>
 
   <div class="section-flow" style="--section-bg: #f5eff2; --next-bg: #f6f3f5">
     <CTABanner
-      title="¿Necesitas apoyo profesional?"
-      description="Los articulos informan, pero la terapia transforma."
-      primaryCta={{ label: 'Reservar sesion', href: '/contacto' }}
-      secondaryCta={{ label: 'Conoce mis servicios', href: '/servicios' }}
+      title={cta.title}
+      description={cta.description}
+      primaryCta={cta.primaryCta}
+      secondaryCta={cta.secondaryCta}
+      backgroundImageUrl={cta.backgroundImage ? portraitImage(cta.backgroundImage) : undefined}
+      backgroundImageSrcSet={cta.backgroundImage ? portraitSrcSet(cta.backgroundImage) : undefined}
+      backgroundImagePosition={hotspotToObjectPosition(cta.backgroundImage)}
     />
   </div>
 </PageLayout>
@@ -130,7 +151,6 @@ const categories = [
     btn.addEventListener('click', () => {
       const category = btn.dataset.category;
 
-      // Update active filter
       filters.forEach((f) => {
         f.classList.remove('bg-[#98465d]', 'text-white');
         f.classList.add('bg-[#f6f3f5]', 'text-[#5d5a5a]');
@@ -138,7 +158,6 @@ const categories = [
       btn.classList.remove('bg-[#f6f3f5]', 'text-[#5d5a5a]');
       btn.classList.add('bg-[#98465d]', 'text-white');
 
-      // Filter cards
       let visibleCount = 0;
       cards.forEach((card) => {
         if (category === 'todos' || card.dataset.category === category) {
